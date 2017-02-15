@@ -1,0 +1,42 @@
+{
+  "name": "lelm",
+  "version": "0.0.1",
+  "description": "",
+  "main": "index.js",
+  "directories": {
+    "test": "tests"
+  },
+  "scripts": {
+    "test-once": "elm-test",
+    "test": "elm-test --watch",
+    "build": "webpack",
+    "watch": "webpack --watch",
+    "dev": "webpack-dev-server --port 4000 --content-base dist/"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "autoprefixer": "^6.5.3",
+    "babel-polyfill": "^6.16.0",
+    "bootstrap-webpack": "0.0.5",
+    "css-loader": "^0.26.1",
+    "extract-text-webpack-plugin": "^1.0.1",
+    "file-loader": "^0.9.0",
+    "imports-loader": "^0.6.5",
+    "json-loader": "^0.5.4",
+    "less": "^2.7.1",
+    "less-loader": "^2.2.3",
+    "postcss-loader": "^1.2.0",
+    "style-loader": "^0.13.1",
+    "url-loader": "^0.5.7",
+    "webpack": "^1.13.3",
+    "webpack-dev-server": "^1.16.2"
+  },
+  "dependencies": {
+    "bootstrap": "^3.3.7",
+    "elm-webpack-loader": "^3.1.0",
+    "exports-loader": "^0.6.3",
+    "glob": "^7.1.1",
+    "jquery": "^3.1.1"
+  }
+}
