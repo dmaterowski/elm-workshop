@@ -3,7 +3,6 @@ module Ex3 exposing(..)
 import Html exposing (Html, button, div, text, p)
 import Html.Attributes exposing (class)
 import Html.Events exposing (onClick)
-import List.Extra exposing (zip)
 import Dict
 
 
@@ -34,7 +33,7 @@ view model =
     [ 
       viewResult <| validate shiftedIndex
     , viewResult <| validateIndexedLetter indexList
-    , viewResult <| validateReversed addIndex
+    , viewResult <| validateReversed appendIndex
     , viewResult <| validateCipher encode
     , Html.node "link" [ Html.Attributes.rel "stylesheet", Html.Attributes.href "styles.css" ] []
     ]
@@ -83,7 +82,7 @@ validateIndexes fun values base expected =
 letters = [ 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z' ]
 
 
-addIndex values key =
+appendIndex values key =
   shiftedIndex values key
   |> pairs values
 
@@ -124,7 +123,7 @@ translateLetter char shiftedDict baseDict =
 
 encode val key =
   let 
-    shiftedDict = Dict.fromList <| addIndex letters key
+    shiftedDict = Dict.fromList <| appendIndex letters key
     baseDict = Dict.fromList <| indexList letters 0
   in
     val |> String.toUpper 

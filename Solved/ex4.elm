@@ -17,7 +17,7 @@ main =
 initial = ( Model defaultUser 
   , Cmd.none )
   
-defaultUser = User "Dan" "dmaterowski@infusion.com" [ ]
+defaultUser = User "Dan" "dmaterowski@infusion.com"
 
   
 type alias Model = 
@@ -27,12 +27,8 @@ type alias Model =
 type alias User =
   { name : String
   , email: String
-  , notes : List Note 
   }
   
-
-type Note = 
-  Todo
 
 
 type Msg =

@@ -19,7 +19,7 @@ view model =
     div [] 
     [ viewResult <| validate shiftedIndex
 --   , viewResult <| validateIndexedLetter indexList
---   , viewResult <| validateReversed addIndex
+--   , viewResult <| validateReversed appendIndex
 --   , viewResult <| validateCipher encode
     , Html.node "link" [ Html.Attributes.rel "stylesheet", Html.Attributes.href "styles.css" ] []
     ]
