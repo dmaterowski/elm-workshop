@@ -25,7 +25,7 @@ defaultUser = User "Dan" "dmaterowski@infusion.com"
   
 type alias Model = 
   { user : User
-  , form : FormState
+  , form : Form
   }
   
 type alias User =
@@ -34,7 +34,7 @@ type alias User =
   , notes : List Note 
   }
   
-type FormState = 
+type Form = 
   Closed
   | TextForm TextData
 
@@ -79,8 +79,8 @@ update msg model =
       ( { model | user = addNote model.user model.form, form = Closed}, Cmd.none)
 
 
-updateForm formState field =
-  case formState of 
+updateForm form field =
+  case form of 
     TextForm form ->
       case field of
         Id id ->
@@ -93,7 +93,7 @@ updateForm formState field =
         Text text ->
           TextForm { form | text = text }
     _ -> 
-       formState
+       form
 
 addNote user form =
   case form of 
