@@ -6,7 +6,6 @@ require('bootstrap-webpack!../bootstrap.config.js');
 
 
 var Elm = require('./Main');
-//localStorage.setItem('userData', JSON.stringify({token: "tkn", userName: "test"}));
 
 var userData = JSON.parse(localStorage.getItem('userData'));
 console.log(userData);

@@ -4,18 +4,18 @@ module.exports = {
   styleLoader: require('extract-text-webpack-plugin').extract('style-loader', 'css-loader!postcss-loader!less-loader'),
 
   scripts: {
-    'transition': true,
-    'alert': true,
-    'button': true,
-    'carousel': true,
-    'collapse': true,
-    'dropdown': true,
-    'modal': true,
-    'tooltip': true,
-    'popover': true,
-    'scrollspy': true,
-    'tab': true,
-    'affix': true
+    'transition': false,
+    'alert': false,
+    'button': false,
+    'carousel': false,
+    'collapse': false,
+    'dropdown': false,
+    'modal': false,
+    'tooltip': false,
+    'popover': false,
+    'scrollspy': false,
+    'tab': false,
+    'affix': false
   },
   styles: {
     "mixins": true,

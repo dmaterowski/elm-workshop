@@ -1,49 +1,30 @@
 port module Main exposing (main)
 
-import Task
+import Html
 import Html exposing (..)
 import Html.Attributes exposing (class, placeholder, type_, value, href, attribute, style)
-import Html.Events exposing (..)
 import Navigation
-import Http
+import LayoutViews exposing (..)
+import Nav exposing (..)
 import Products
 import Login
 import User.Data as User
-import Mouse
 
 port saveUser : Maybe User.UserData -> Cmd msg
-
 
 type alias Model = 
   { page : Page
   , products : Products.Model
   , login : Login.Model
   , currentUser : User.CurrentUser
-  , mouseX : Int
-  , mouseY : Int
   }
 
 
 type Msg
   = NoOp
-  | ChangePage Page
-  | Navigate Page
   | ProductsMsg Products.Msg
   | LoginMsg Login.Msg
-  | Logout
-
-type Page
-  = NotFound
-  | Public PublicPage 
-  | User UserPage
-
-type PublicPage 
-  = Landing
-  | Login
-
-type UserPage 
-  = Products
-  | Customization
+  | Navigation Nav.Msg
 
 
 type alias Flags =
@@ -57,7 +38,7 @@ init flags location =
         user = User.userFromStorage flags.userData
         page = hashToPage location.hash |> changeWithPermissions user
 
-        ( productsInitModel, productsInitCmd ) =
+        ( productsInitModel, productsInitCmd) =
             Products.init user
         
         ( loginInitModel, loginInitCmd ) =
@@ -68,8 +49,6 @@ init flags location =
         , products = productsInitModel
         , login = loginInitModel
         , currentUser = user
-        , mouseX = -5
-        , mouseY = -5
         },
       Cmd.batch 
         [ Cmd.map ProductsMsg productsInitCmd
@@ -86,10 +65,10 @@ update msg model =
     NoOp ->
       ( model, Cmd.none )
 
-    Navigate page ->
+    Navigation (Navigate page) ->
       ( model, Navigation.newUrl <| pageToHash page)
 
-    ChangePage page ->
+    Navigation (ChangePage page) ->
       let 
         updatedPage = changeWithPermissions model.currentUser page 
       in
@@ -100,7 +79,7 @@ update msg model =
           ( productsModel, cmd ) =
               Products.update msg model.products model.currentUser
       in 
-          ( { model | products = productsModel }, Cmd.batch [ Cmd.map ProductsMsg cmd])
+          ( { model | products = productsModel }, Cmd.map ProductsMsg cmd)
 
     LoginMsg msg ->
       let 
@@ -112,17 +91,18 @@ update msg model =
             ( { model | login = loginModel}, Cmd.map LoginMsg cmd )
           Just data ->
             let 
-              (updatedModel, updatedCmd) = update (ChangePage <| User Products) { model | login = loginModel, currentUser = User.LoggedIn data}
+              (updatedModel, updatedCmd) = update 
+                (Navigation (ChangePage <| User Products)) 
+                { model | login = loginModel, currentUser = User.LoggedIn data}
             in
              (updatedModel, Cmd.batch [ saveUser <| Just data, updatedCmd, Cmd.map LoginMsg cmd ] )
 
-    Logout ->
+    Navigation Logout ->
       let 
-        ( updatedModel, newCmd ) = update ( ChangePage ( Public Landing ) ) model
+        ( updatedModel, newCmd ) = update (Navigation (ChangePage ( Public Landing )) ) model
       in
       { updatedModel | currentUser = User.Anonymous } ! [ saveUser Nothing ] 
 
-   
 
 changeWithPermissions currentUser page  = 
   case page of
@@ -133,14 +113,11 @@ changeWithPermissions currentUser page  =
     _ -> page
 
 view : Model -> Html Msg
-view model = viewLayout model
+view model = viewLayout model viewCurrentPage Navigation
 
-
-viewDialogContainer : (a -> Html m) -> a -> Html m
-viewDialogContainer contentView content = div [class "row"]
-    [ div [class "col-md-4 col-md-offset-4 custom-dialog"] 
-        [ contentView content
-        ]
+viewLayout model viewCurrentPage toMsg = div [] [ pageHeader model toMsg
+    , viewCurrentPage model
+    , footer [class "footer"] [text "Footer"]
     ]
 
 viewCurrentPage : Model -> Html Msg
@@ -158,7 +135,7 @@ viewCurrentPage model =
           h1 [] [text "Not found"] 
 
         User Products ->
-          Products.view model.products ProductsMsg
+          Products.view model.products
 
         User Customization ->
           h1 [] [text "Customization"]
@@ -166,89 +143,15 @@ viewCurrentPage model =
   in 
     div [ class "row" ] 
       [ div [class "col-md-8 col-md-offset-2" ] [ page ]
-      , div [class "heart", style [("position", "fixed"), ("left", toString model.mouseX ++ "px"), ("top", toString model.mouseY ++ "px")]] [text " "] 
       ]
-
-
-viewLayout : Model -> Html Msg
-viewLayout model = div [] [ pageHeader model
-    , viewCurrentPage model
-    , footer [class "footer"] [text "Footer"]
-    ]
-
-pageHeader : Model -> Html Msg
-pageHeader model = header [class "header"] 
-    [  nav [class "navbar navbar-default navbar-static-top"]
-        [ div [class "container"] 
-            [ ul [class "nav navbar-nav"] 
-                (li [] [ a [ onClick <| Navigate (Public Landing)
-                            , class "navbar-brand"
-                            , attribute "role" "button"] 
-                            [ text "Sharks Inc." ] ]           
-                 :: loggedInNavigationButtons model.currentUser)
-                 
-              ,Login.viewLoginWidget model.currentUser (Navigate (Public Login)) Logout (Navigate (Public Login))
-                
-            ]
-
-        ]
-       
-    ]
-
-loggedInNavigationButtons currentUser = 
-  case currentUser of 
-    User.LoggedIn data ->
-      [ li [] [ a [ onClick <| Navigate (User Products)
-                  , attribute "role" "button"] 
-                  [text "Products"]]
-      , li [] [ a [ onClick <| Navigate (Public Landing)
-                  , attribute "role" "button"] 
-                  [ text "Customization"] ]
-      ]
-    _ -> []
 
 subscriptions : Model -> Sub Msg
 subscriptions model =
   Sub.none
-
-hashToPage : String -> Page
-hashToPage hash =
-    case hash of 
-        "#/" ->
-            Public Landing
-        "" -> 
-            Public Landing
-        "#/login" -> 
-            Public Login
-
-        "#/products" ->
-            User Products
-
-        _ -> 
-            NotFound
-
-pageToHash : Page -> String
-pageToHash page = 
-    case page of 
-        NotFound -> 
-          "#/notfound"
-        Public Landing ->
-          "#/"
-        Public Login -> 
-          "#/login"
-        User Products ->
-          "#/products"
-        User Customization ->
-          "#/customization"
-
-locationToMessage : Navigation.Location -> Msg
-locationToMessage location = 
-    location.hash 
-    |> hashToPage
-    |> ChangePage
+   
 
 main =
-  Navigation.programWithFlags locationToMessage
+  Navigation.programWithFlags (locationToMessage Navigation)
     { init = init
     , view = view
     , update = update

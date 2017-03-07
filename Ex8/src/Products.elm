@@ -43,7 +43,6 @@ update msg model currentUser =
     SearchResult (Ok value) ->
       ({ model | products = value }, Cmd.none)
       
-
     SearchResult (Err _) ->
       (model, Cmd.none)
 
@@ -62,11 +61,11 @@ decodeProduct =
     (JD.at ["ImageUrl"] JD.string)
 
 
-view model toMsg =
-  div [] ((text "Products: ") :: List.map (viewProduct toMsg) model.products)
+view model =
+  div [] ((text "Products: ") :: List.map (viewProduct) model.products )
 
-viewProduct toMsg product =  
-  p [ ] [img [src product.imgUrl, style [("height", "50px")]] [], text product.name]
+viewProduct product =  
+  p [] [img [src product.imgUrl, style [("height", "50px")]] [], text product.name]
 
 
 subscriptions : Model -> Sub Msg
