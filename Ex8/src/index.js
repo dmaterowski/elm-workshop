@@ -16,3 +16,7 @@ app.ports.saveUser.subscribe(function(userData){
   console.log('userData')
   localStorage.setItem('userData', JSON.stringify(userData));
 })
+
+ app.ports.save.subscribe(function(word) {
+        console.log(word)
+ });

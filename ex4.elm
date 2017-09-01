@@ -16,7 +16,7 @@ main =
 initial = ( Model defaultUser 
   , Cmd.none )
   
-defaultUser = User "Dan" "dmaterowski@infusion.com" 
+defaultUser = User "Dan" "d.materowski+elm@gmail.com" 
 
   
 type alias Model = 
