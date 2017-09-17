@@ -1,4 +1,4 @@
-module ExBasics exposing (..)
+module Ex1 exposing (..)
 
 {- Docs: http://package.elm-lang.org/packages/elm-lang/core/latest
    From JS cheatsheet: http://elm-lang.org/docs/from-javascript
@@ -7,7 +7,7 @@ module ExBasics exposing (..)
    elm-repl
 
    2. Then import this module:
-   import ExBasics
+   import Ex1
 
    -- Part 1
    -- Data Types
@@ -17,10 +17,10 @@ module ExBasics exposing (..)
 
    4. What is the problem?
       We need fully qualified name:
-   ExBasics.x
+   Ex1.x
 
    5. This is too much typing, let's import everything:
-   import ExBasics exposing (..)
+   import Ex1 exposing (..)
 
    You will find further instructions below as inline comments.
 -}
@@ -328,7 +328,7 @@ inc =
 --mul =
 {-
    23. Finally there is a rescue from null in Elm which is called Maybe (like in the song: call me maybe ;))
-       There are to possibilities: there is a value or not:
+       There are two possibilities: there is a value or not:
        Just "my value"
        Nothing
 -}

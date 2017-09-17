@@ -13,20 +13,16 @@ type Selection
   = Empty
   | Single String
   | Multiple (List String)
-  | Advanced String CustomItemData
 
 {-
   Run test set in tests/Tests.elm and implement function selectionToValues
+  - run 'elm-test' in Ex2 folder (if not installed run npm install -g elm-test)
   - <| operator is defined here: http://package.elm-lang.org/packages/elm-lang/core/5.1.1/Basics#<| 
   - what will be the type annotation of selectionToValues?
 -}
 
 selectionToValues selection =
-  case selection of
-    Empty -> []
-    Single value -> [value]
-    Multiple values -> values
-    Advanced value data -> [value]
+  []
 
 {-
   2. Back to lists!
@@ -35,14 +31,8 @@ selectionToValues selection =
 -}
 
 extendSelection value selection =
-    case selection of
-      Empty -> Single value
-      Single original -> Multiple [value, original]
-      Multiple originalValues -> Multiple <| value :: originalValues
-      Advanced value data -> selection
+    Empty
       
-
-
 {-
   3. It turns out we need additional logic for processing of custom items!
     Add new possible value to Selection type that holds String and CustomItemData
@@ -55,7 +45,6 @@ type alias CustomItemData =
   , features: List Int
   }
 
-
 {-
   4. Pattern matching on lists:
     Uncomment next set of tests and implement toSelection function
@@ -63,11 +52,7 @@ type alias CustomItemData =
 -}
 toSelection: List String -> Selection
 toSelection values =
-  case values of
-    [] -> Empty
-    [value] -> Single value
-    values -> Multiple values
-
+  Empty
 
 {-
   4. Processing
@@ -84,7 +69,4 @@ toSelection values =
 
 filteredToUppercaseString: Selection -> List String
 filteredToUppercaseString selection =
-  selection 
-  |> selectionToValues
-  |> List.map String.toUpper
-  |> List.filter (\v -> v /= "BANANAS")
+  []
