@@ -91,9 +91,11 @@ wrongJson =
     """{ "name": "Mary"}"""
 
 
+wrongProperty =
+    decodeString (field "age" int) wrongJson
 
--- wrongProperty =
---     decodeString
+
+
 {-
    5. Decoding objects with multiple properties
       In Elm we need records to represent objects with multiple properties.
@@ -120,7 +122,6 @@ lessie =
    6. Decoding nested objects.
       What if you need to retrieve data from the JSON object which contains hierarchy of nested objects?
       Use `at` decoder!
-      Check the type of `nested` below:
 -}
 
 
@@ -151,8 +152,36 @@ json =
        -  mapX where X is a number of props can be useful
        - let ... in ... expression helps to clean your code
 -}
--- type alias Book =
--- book =
+
+
+type alias Book =
+    { id : Int
+    , subject : String
+    , author : String
+    , title : String
+    , kind : String
+    , genre : String
+    }
+
+
+book =
+    let
+        bookDecoder =
+            map6 Book
+                (field "id" int)
+                (field "subject" string)
+                (field "author" string)
+                (field "title" string)
+                (field "kind" string)
+                (field "genre" string)
+
+        bookResultDecoder =
+            at [ "result", "book" ] bookDecoder
+    in
+        decodeString bookResultDecoder json
+
+
+
 {-
    8. Sometimes you want to return const value and ignore what you find in JSON (however it must be valid JSON!)
       You can use `succeed` or `fail` decoders.
@@ -172,7 +201,7 @@ failure =
    9. Decoding lists
       Often we need to decode a list of primitive values or objects.
       There is a list decoder for that.
-      Try to decode a list of pets based on provided petsJSON.
+      Try to decode a list of pets.
 -}
 
 
@@ -203,8 +232,15 @@ petsJSON =
 """
 
 
+pets =
+    let
+        petDecoder =
+            map2 Pet (field "name" string) (field "age" int)
+    in
+        decodeString (list petDecoder) petsJSON
 
--- pets =
+
+
 {-
    There are still many very useful decoders we haven't touched yet, to name a few: oneOf, null, maybe, index, nullable, andThen, dict, array, or lazy,
    which you can find in the documentation (link can be found on top of this file).
