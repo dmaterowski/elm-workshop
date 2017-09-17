@@ -5,18 +5,12 @@ import Html.Attributes exposing (..)
 import Html.Events exposing (..)
 
 {-
-  Model has been extended by newNote : Maybe TextData
-  1. if newNote has no value show button that populates newNote with empty Text data
-  2. if newNote has value show 
-    - representation of it, just as it would look like in main list (hint: reuse functions!)
-    - form with 3 input fields (for now using them should change anything in model)
-    - button 
-  3. wire up inputs with messages that update corresponding fields in newNote 
-    - hint: onInput
-    - hint: Maybe.map
-  4. wire up the button to add current newNote to the beginning of main list and close the form
-    - hint: 
+    Refactor your application to use single message for all text input update messages
+    -- remember union types can hold other union types
+    -- function composition operator will be crucial (<<) http://package.elm-lang.org/packages/elm-lang/core/5.1.1/Basics#<<
+        -- type constructors are just functions!
 -}
+
 main =
     Html.program
         { init = initial
@@ -77,12 +71,66 @@ type alias TextData =
 
 
 type Msg
-    = Noop
+    = Open
+    | Add
+    | UpdateHeader String
+    | UpdateId String
+    | UpdateText String
 
 
 update : Msg -> Model -> ( Model, Cmd msg )
 update msg model =
-    ( model, Cmd.none )
+    case msg of
+        Open ->
+            ( { model | newNote = Just emptyTextNote }, Cmd.none )
+
+        UpdateHeader value ->
+            ( { model | newNote = updateNote model.newNote msg }, Cmd.none )
+
+        UpdateId value ->
+            ( { model | newNote = updateNote model.newNote msg }, Cmd.none )
+
+        UpdateText value ->
+            ( { model | newNote = updateNote model.newNote msg }, Cmd.none )
+
+        Add ->
+            ( { model | user = addNote model.user model.newNote, newNote = Nothing }, Cmd.none )
+
+
+updateNote form msg =
+    Maybe.map
+        (\value ->
+            case msg of
+                UpdateHeader textValue ->
+                    { value | header = textValue }
+
+                UpdateId textValue ->
+                    let
+                        converted =
+                            String.toInt textValue |> Result.withDefault 0
+                    in
+                    { value | id = converted }
+
+                UpdateText textValue ->
+                    { value | text = textValue }
+
+                _ ->
+                    value
+        )
+        form
+
+
+addNote user form =
+    case form of
+        Just textData ->
+            { user | notes = TextNote textData :: user.notes }
+
+        _ ->
+            user
+
+
+emptyTextNote =
+    { id = 0, header = "", text = "" }
 
 
 view model =
@@ -108,9 +156,26 @@ viewUser user =
         ]
 
 
+
 viewEditor noteForm =
     div [ class "row" ]
-        []
+        [ case noteForm of
+            Nothing ->
+                div []
+                    [ button [ onClick Open, class "btn btn-default" ] [ text "Add" ]
+                    ]
+
+            Just data ->
+                div []
+                    [ listNotes [ TextNote data ]
+                    , Html.form [ onSubmit Add ]
+                        [ input [ class "form-input", type_ "text", placeholder "id", onInput UpdateId ] []
+                        , input [ class "form-input", type_ "text", placeholder "header", onInput UpdateHeader ] []
+                        , input [ class "form-input", type_ "text", placeholder "text", onInput UpdateText ] []
+                        , button [ onClick Add, class "btn btn-default" ] [ text "Add" ]
+                        ]
+                    ]
+        ]
 
 
 listNotes notes =
