@@ -1,7 +1,7 @@
 module ExEncoders exposing (..)
 
 import Array
-import Json.Encode exposing (..)
+import Json.Encode as Encode
 
 
 -- Docs: http://package.elm-lang.org/packages/elm-lang/core/5.1.1/Json-Encode
@@ -17,19 +17,19 @@ import Json.Encode exposing (..)
 
 
 s =
-    string "Thix is some text"
+    Encode.string "Thix is some text"
 
 
 i =
-    int 7
+    Encode.int 7
 
 
 f =
-    float 3.14
+    Encode.float 3.14
 
 
 b =
-    bool True
+    Encode.bool True
 
 
 
@@ -37,7 +37,7 @@ b =
 
 
 n =
-    null
+    Encode.null
 
 
 
@@ -48,8 +48,8 @@ n =
 
 numbersList =
     [ 1, 2, 3 ]
-        |> List.map int
-        |> list
+        |> List.map Encode.int
+        |> Encode.list
 
 
 
@@ -59,12 +59,12 @@ numbersList =
 
 
 o =
-    [ ( "name", string "Mike" )
-    , ( "surname", string "Wazowski" )
-    , ( "id", int 123 )
+    [ ( "name", Encode.string "Mike" )
+    , ( "surname", Encode.string "Wazowski" )
+    , ( "id", Encode.int 123 )
     , ( "points", numbersList )
     ]
-        |> object
+        |> Encode.object
 
 
 
@@ -77,31 +77,31 @@ o =
 
 
 sStr =
-    encode 0 s
+    Encode.encode 0 s
 
 
 iStr =
-    encode 4 i
+    Encode.encode 4 i
 
 
 fStr =
-    encode 0 f
+    Encode.encode 0 f
 
 
 bStr =
-    encode 0 b
+    Encode.encode 0 b
 
 
 nStr =
-    encode 0 n
+    Encode.encode 0 n
 
 
 nlStr =
-    encode 4 numbersList
+    Encode.encode 4 numbersList
 
 
 oStr =
-    encode 4 o
+    Encode.encode 4 o
 
 
 
@@ -111,19 +111,19 @@ oStr =
 
 
 nested =
-    object
+    Encode.object
         [ ( "data"
-          , list
-                [ object [ ( "x", int 1 ), ( "y", int 1 ) ]
-                , object [ ( "x", int 2 ), ( "y", int 2 ) ]
-                , object [ ( "x", int 3 ), ( "y", int 3 ) ]
+          , Encode.list
+                [ Encode.object [ ( "x", Encode.int 1 ), ( "y", Encode.int 1 ) ]
+                , Encode.object [ ( "x", Encode.int 2 ), ( "y", Encode.int 2 ) ]
+                , Encode.object [ ( "x", Encode.int 3 ), ( "y", Encode.int 3 ) ]
                 ]
           )
         ]
 
 
 nestedStr =
-    encode 4 nested
+    Encode.encode 4 nested
 
 
 

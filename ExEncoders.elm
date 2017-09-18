@@ -1,7 +1,7 @@
 module ExEncoders exposing (..)
 
 import Array
-import Json.Encode exposing (..)
+import Json.Encode as Encode
 
 
 -- Docs: http://package.elm-lang.org/packages/elm-lang/core/5.1.1/Json-Encode
@@ -17,19 +17,19 @@ import Json.Encode exposing (..)
 
 
 s =
-    string "Thix is some text"
+    Encode.string "Thix is some text"
 
 
 i =
-    int 7
+    Encode.int 7
 
 
 f =
-    float 3.14
+    Encode.float 3.14
 
 
 b =
-    bool True
+    Encode.bool True
 
 
 
@@ -37,7 +37,7 @@ b =
 
 
 n =
-    null
+    Encode.null
 
 
 
@@ -48,8 +48,8 @@ n =
 
 numbersList =
     [ 1, 2, 3 ]
-        |> List.map int
-        |> list
+        |> List.map Encode.int
+        |> Encode.list
 
 
 
@@ -59,12 +59,12 @@ numbersList =
 
 
 o =
-    [ ( "name", string "Mike" )
-    , ( "surname", string "Wazowski" )
-    , ( "id", int 123 )
+    [ ( "name", Encode.string "Mike" )
+    , ( "surname", Encode.string "Wazowski" )
+    , ( "id", Encode.int 123 )
     , ( "points", numbersList )
     ]
-        |> object
+        |> Encode.object
 
 
 
@@ -77,7 +77,7 @@ o =
 
 
 iStr =
-    encode 0 i
+    Encode.encode 0 i
 
 
 
