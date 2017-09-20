@@ -1,4 +1,4 @@
-module Ex6 exposing (..)
+module Main exposing (..)
 
 import Array exposing (Array)
 import Random
@@ -7,6 +7,14 @@ import Html.Attributes exposing (style)
 import Html.Events exposing (onClick)
 
 
+{-
+   Commands and Random
+   In order to test this program, run:
+   elm-reactor
+
+   And click ExCmds.elm - this file will be compiled and built for you by elm-reactor
+   Follow instructions for TODOs below
+-}
 -- MODEL
 
 
@@ -27,9 +35,17 @@ model =
     }
 
 
+
+{-
+   TODO
+   1. Load random quote once Elm has started
+   Hint - look at the second part of the tuple when there is a valid command - it will be executed by Elm Runtime during model initial load!
+-}
+
+
 init : ( Model, Cmd Msg )
 init =
-    ( model, callForRandomQuote secretQuotes )
+    ( model, Cmd.none )
 
 
 
@@ -45,19 +61,14 @@ update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
         AskForQuote ->
-            ( model, callForRandomQuote secretQuotes )
+            let
+                randomQuoteGenerator =
+                    Random.map (\n -> Array.get n secretQuotes) <| Random.int 0 (Array.length secretQuotes - 1)
+            in
+                ( model, Random.generate ReturnQuote randomQuoteGenerator )
 
         ReturnQuote quote ->
             ( { model | quote = quote }, Cmd.none )
-
-
-callForRandomQuote : Array Quote -> Cmd Msg
-callForRandomQuote quotes =
-    let
-        randomQuoteGenerator =
-            Random.map (\n -> Array.get n quotes) <| Random.int 0 (Array.length quotes - 1)
-    in
-        Random.generate ReturnQuote randomQuoteGenerator
 
 
 
@@ -74,31 +85,26 @@ view model =
         ]
 
 
+
+{-
+   TODO
+   2. Change viewQuote function in order to display also an author of the quote!
+-}
+
+
 viewQuote : Model -> Html Msg
 viewQuote model =
     case model.quote of
         Just quote ->
-            let
-                quoteText =
-                    Maybe.withDefault "" <| Maybe.map .text model.quote
-
-                quoteAuthor =
-                    Maybe.withDefault "" <| Maybe.map .author model.quote
-            in
-                div []
-                    [ blockquote
-                        [ style
-                            [ ( "border-left", "0.5em solid #cfcfcf" )
-                            , ( "padding", "0.5em" )
-                            , ( "font-family", "serif" )
-                            , ( "font-style", "italic" )
-                            ]
-                        ]
-                        [ text quoteText ]
-                    , div
-                        [ style [ ( "margin", "1em 4.5em" ) ] ]
-                        [ text quoteAuthor ]
+            blockquote
+                [ style
+                    [ ( "border-left", "0.5em solid #cfcfcf" )
+                    , ( "padding", "0.5em" )
+                    , ( "font-family", "serif" )
+                    , ( "font-style", "italic" )
                     ]
+                ]
+                [ text <| Maybe.withDefault "" <| Maybe.map .text model.quote ]
 
         Nothing ->
             p [ style [ ( "margin", "1em 3em" ) ] ] [ text "Loading..." ]

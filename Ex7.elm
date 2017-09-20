@@ -1,6 +1,6 @@
 module ExDecoders exposing (..)
 
-import Json.Decode as Decode
+import Json.Decode exposing (..)
 
 
 -- Short guide: https://guide.elm-lang.org/interop/json.html
@@ -27,19 +27,19 @@ import Json.Decode as Decode
 
 
 i =
-    Decode.decodeString Decode.int "7"
+    decodeString int "7"
 
 
 s =
-    Decode.decodeString Decode.string "\"This is my string\""
+    decodeString string "\"This is my string\""
 
 
 f =
-    Decode.decodeString Decode.float "3.14"
+    decodeString float "3.14"
 
 
 b =
-    Decode.decodeString Decode.bool "true"
+    decodeString bool "true"
 
 
 
@@ -57,7 +57,7 @@ b =
 
 
 err =
-    Decode.decodeString Decode.int "no number here"
+    decodeString int "no number here"
 
 
 
@@ -70,7 +70,7 @@ err =
 
 
 x =
-    Decode.decodeString (Decode.field "x" Decode.int) """{ "x": 1, "y": 1 }"""
+    decodeString (field "x" int) """{ "x": 1, "y": 1 }"""
 
 
 
@@ -84,7 +84,7 @@ x =
 
 
 emptyObj =
-    Decode.decodeString (Decode.field "name" Decode.string) "{}"
+    decodeString (field "name" string) "{}"
 
 
 wrongJson =
@@ -110,9 +110,9 @@ type alias Pet =
 lessie =
     let
         petDecoder =
-            Decode.map2 Pet (Decode.field "name" Decode.string) (Decode.field "age" Decode.int)
+            map2 Pet (field "name" string) (field "age" int)
     in
-        Decode.decodeString petDecoder """{ "name": "Lessie", "age": 3, "notused": true }"""
+        decodeString petDecoder """{ "name": "Lessie", "age": 3, "notused": true }"""
 
 
 
@@ -125,7 +125,7 @@ lessie =
 
 
 nested =
-    Decode.decodeString (Decode.at [ "result", "stars" ] Decode.int) """{ "result": { "stars": 17 } }"""
+    decodeString (at [ "result", "stars" ] int) """{ "result": { "stars": 17 } }"""
 
 
 json =
@@ -160,11 +160,11 @@ json =
 
 
 success =
-    Decode.decodeString (Decode.succeed 13) "false"
+    decodeString (succeed 13) "false"
 
 
 failure =
-    Decode.decodeString (Decode.fail "Custom error message") "true"
+    decodeString (fail "Custom error message") "true"
 
 
 
@@ -179,9 +179,9 @@ failure =
 myList =
     let
         listDecoder =
-            Decode.list Decode.int
+            list int
     in
-        Decode.decodeString listDecoder "[ 1, 3, 5 ]"
+        decodeString listDecoder "[ 1, 3, 5 ]"
 
 
 petsJSON =

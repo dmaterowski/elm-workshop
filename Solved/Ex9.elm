@@ -1,4 +1,4 @@
-module Main exposing (..)
+module Ex9 exposing (..)
 
 import Html exposing (..)
 import Html.Attributes exposing (..)

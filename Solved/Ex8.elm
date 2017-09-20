@@ -1,4 +1,4 @@
-module ExEncoders exposing (..)
+module Ex8 exposing (..)
 
 import Array
 import Json.Encode as Encode

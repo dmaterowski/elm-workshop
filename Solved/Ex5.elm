@@ -3,9 +3,6 @@ module Main exposing (..)
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (..)
-import Http
-import Json.Decode as Decode
-
 
 
 main =
@@ -70,48 +67,49 @@ type alias TextData =
 type Msg
     = Open
     | Add
-    | UpdateForm FormChange
-    | RequestMoreSharks
+    | UpdateHeader String
+    | UpdateId String
+    | UpdateText String
 
 
-type FormChange
-    = Id String
-    | Header String
-    | Text String
-
-
-update : Msg -> Model -> ( Model, Cmd Msg )
+update : Msg -> Model -> ( Model, Cmd msg )
 update msg model =
     case msg of
         Open ->
             ( { model | newNote = Just emptyTextNote }, Cmd.none )
 
-        UpdateForm formValue ->
-            ( { model | newNote = updateNote model.newNote formValue }, Cmd.none )
+        UpdateHeader value ->
+            ( { model | newNote = updateNote model.newNote msg }, Cmd.none )
+
+        UpdateId value ->
+            ( { model | newNote = updateNote model.newNote msg }, Cmd.none )
+
+        UpdateText value ->
+            ( { model | newNote = updateNote model.newNote msg }, Cmd.none )
 
         Add ->
             ( { model | user = addNote model.user model.newNote, newNote = Nothing }, Cmd.none )
 
-        RequestMoreSharks ->
-            ( model, getSharks )
 
-
-updateNote form formValue =
+updateNote form msg =
     Maybe.map
         (\value ->
-            case formValue of
-                Header textValue ->
+            case msg of
+                UpdateHeader textValue ->
                     { value | header = textValue }
 
-                Id textValue ->
+                UpdateId textValue ->
                     let
                         converted =
                             String.toInt textValue |> Result.withDefault 0
                     in
                     { value | id = converted }
 
-                Text textValue ->
+                UpdateText textValue ->
                     { value | text = textValue }
+
+                _ ->
+                    value
         )
         form
 
@@ -123,14 +121,6 @@ addNote user form =
 
         _ ->
             user
-
-
-getSharks =
-    let
-        url =
-            "https://api.giphy.com/v1/gifs/random?api_key=dc6zaTOxFJmzC&tag=sharks"
-    in
-    Cmd.none
 
 
 emptyTextNote =
@@ -160,22 +150,22 @@ viewUser user =
         ]
 
 
+
 viewEditor noteForm =
     div [ class "row" ]
         [ case noteForm of
             Nothing ->
                 div []
-                    [ button [ onClick Open, class "btn btn-default" ] [ text "New note" ]
-                    , button [ onClick RequestMoreSharks, class "btn btn-default" ] [ text "Add image" ]
+                    [ button [ onClick Open, class "btn btn-default" ] [ text "Add" ]
                     ]
 
             Just data ->
                 div []
                     [ listNotes [ TextNote data ]
                     , Html.form [ onSubmit Add ]
-                        [ input [ class "form-input", type_ "text", placeholder "id", onInput (UpdateForm << Id) ] []
-                        , input [ class "form-input", type_ "text", placeholder "header", onInput (UpdateForm << Header) ] []
-                        , input [ class "form-input", type_ "text", placeholder "text", onInput (UpdateForm << Text) ] []
+                        [ input [ class "form-input", type_ "text", placeholder "id", onInput UpdateId ] []
+                        , input [ class "form-input", type_ "text", placeholder "header", onInput UpdateHeader ] []
+                        , input [ class "form-input", type_ "text", placeholder "text", onInput UpdateText ] []
                         , button [ onClick Add, class "btn btn-default" ] [ text "Add" ]
                         ]
                     ]
@@ -194,14 +184,12 @@ viewNote note =
                 , h3 [] [ text data.header ]
                 , text data.text
                 ]
-            
 
         ImageNote data ->
-             li [ class "list-group-item" ]
+            li [ class "list-group-item" ]
                 [ viewId data.id
                 , img [ src data.url ] []
                 ]
-            
 
 
 viewId id =
