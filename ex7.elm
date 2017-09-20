@@ -1,221 +1,212 @@
-module Main exposing (..)
+module ExDecoders exposing (..)
 
-import Html exposing (..)
-import Html.Attributes exposing (..)
-import Html.Events exposing (..)
-import Http
-import Json.Decode as Decode
+import Json.Decode exposing (..)
 
 
+-- Short guide: https://guide.elm-lang.org/interop/json.html
+-- Docs: http://package.elm-lang.org/packages/elm-lang/core/5.1.1/Json-Decode
+-- Useful library for more complicated JSON schemas: http://package.elm-lang.org/packages/NoRedInk/elm-decode-pipeline/latest
+{-
+   Part 1
+   Primitive values
 
-main =
-    Html.program
-        { init = initial
-        , view = view
-        , update = update
-        , subscriptions = subscriptions
-        }
+   Run:
+   - elm-repl
+   - import ExDecoders exposing (..)
 
+   Usually JSON comes from the server as a string and needs to be parsed or decoded to JS or Elm values in our case.
+   We will use decodeString fn:
 
-initial =
-    ( Model defaultUser Nothing, Cmd.none )
+   decodeString : Decoder a -> String -> Result String a
 
+   It takes decoder, which tells what value exactly we want, then it takes JSON string, and returns result (it can be success or failure)
+   Let's start with simple values: int, string, float, bool
 
-defaultUser =
-    User "Dan"
-        "dmaterowski@infusion.com"
-        [ TextNote { id = 1, header = "Header", text = "And some content for the sake of taking up space. And even more lines, and stuff and like you know, something meaningful." }
-        , ImageNote { id = 2, url = "https://media2.giphy.com/media/12Jbd9dZVochsQ/giphy.gif" }
-        , TextNote { id = 3, header = "I like trains!", text = "Choo choo!" }
-        ]
-
-
-type alias Model =
-    { user : User
-    , newNote : Maybe TextData
-    }
+   1. Investigate types of all results: i, s, f, b
+-}
 
 
-type alias User =
+i =
+    decodeString int "7"
+
+
+s =
+    decodeString string "\"This is my string\""
+
+
+f =
+    decodeString float "3.14"
+
+
+b =
+    decodeString bool "true"
+
+
+
+{-
+   Docs for Result type:
+   http://package.elm-lang.org/packages/elm-lang/core/5.1.1/Result
+
+   Why all values above are of type: Result String val
+   where val is Int, String, Float or Bool?
+
+   2. Examine err below
+
+      Err type is a String, so String from Result above is an error message!
+-}
+
+
+err =
+    decodeString int "no number here"
+
+
+
+{-
+   3. Decoding Objects.
+      Whenever we need to parse some objects with properties, we can use `field` decoder:
+
+      field "propertyName" primitiveDecoder
+-}
+
+
+x =
+    decodeString (field "x" int) """{ "x": 1, "y": 1 }"""
+
+
+
+{-
+   4. What happens when you decode an empty object?
+
+   Try to write decoder for object which contains field `name` of type string, but you try to decode field `age` of type int.
+   Hint you can use triple quotes to avoid escaping special characters like \"
+   """{ }"""
+-}
+
+
+emptyObj =
+    decodeString (field "name" string) "{}"
+
+
+wrongJson =
+    """{ "name": "Mary"}"""
+
+
+
+-- wrongProperty =
+--     decodeString
+{-
+   5. Decoding objects with multiple properties
+      In Elm we need records to represent objects with multiple properties.
+      In order to decode such object we use functions map, map2, map3, ... up to 8.
+-}
+
+
+type alias Pet =
     { name : String
-    , email : String
-    , notes : List Note
+    , age : Int
     }
 
 
-type Note
-    = TextNote TextData
-    | ImageNote ImageData
-
-
-type alias NoteData a =
-    { a
-        | id : Int
-    }
-
-
-type alias ImageData =
-    NoteData
-        { url : String
-        }
-
-
-type alias TextData =
-    NoteData
-        { header : String
-        , text : String
-        }
-
-
-type Msg
-    = Open
-    | Add
-    | UpdateForm FormChange
-    | RequestMoreSharks
-
-
-type FormChange
-    = Id String
-    | Header String
-    | Text String
-
-
-update : Msg -> Model -> ( Model, Cmd Msg )
-update msg model =
-    case msg of
-        Open ->
-            ( { model | newNote = Just emptyTextNote }, Cmd.none )
-
-        UpdateForm formValue ->
-            ( { model | newNote = updateNote model.newNote formValue }, Cmd.none )
-
-        Add ->
-            ( { model | user = addNote model.user model.newNote, newNote = Nothing }, Cmd.none )
-
-        RequestMoreSharks ->
-            ( model, getSharks )
-
-
-updateNote form formValue =
-    Maybe.map
-        (\value ->
-            case formValue of
-                Header textValue ->
-                    { value | header = textValue }
-
-                Id textValue ->
-                    let
-                        converted =
-                            String.toInt textValue |> Result.withDefault 0
-                    in
-                    { value | id = converted }
-
-                Text textValue ->
-                    { value | text = textValue }
-        )
-        form
-
-
-addNote user form =
-    case form of
-        Just textData ->
-            { user | notes = TextNote textData :: user.notes }
-
-        _ ->
-            user
-
-
-getSharks =
+lessie =
     let
-        url =
-            "https://api.giphy.com/v1/gifs/random?api_key=dc6zaTOxFJmzC&tag=sharks"
+        petDecoder =
+            map2 Pet (field "name" string) (field "age" int)
     in
-    Cmd.none
+        decodeString petDecoder """{ "name": "Lessie", "age": 3, "notused": true }"""
 
 
-emptyTextNote =
-    { id = 0, header = "", text = "" }
+
+{-
+   6. Decoding nested objects.
+      What if you need to retrieve data from the JSON object which contains hierarchy of nested objects?
+      Use `at` decoder!
+      Check the type of `nested` below:
+-}
 
 
-view model =
-    div []
-        [ insertCss
-        , insertBootstrap
-        , viewPage model
-        ]
+nested =
+    decodeString (at [ "result", "stars" ] int) """{ "result": { "stars": 17 } }"""
 
 
-viewPage model =
-    div [ class "container" ]
-        [ viewUser model.user
-        , viewEditor model.newNote
-        ]
+json =
+    """{
+    "result": {
+        "book": {
+            "id": 1348208,
+            "subject": "Samochody",
+            "author": "Hankiewicz, Tomasz. Tomtała, Szymon. Magdziarek, Radek.",
+            "title": "Encyklopedia samochodów",
+            "kind": "e-book",
+            "genre": "Dokumenty elektroniczne Encyklopedia"
+        }
+    }
+}"""
 
 
-viewUser user =
-    div [ class "row" ]
-        [ h1 [] [ text user.name ]
-        , h2 [] [ text user.email ]
-        , listNotes user.notes
-        ]
+
+{-
+   7. Write type alias for the book record, then decode JSON listed above.
+      You can use all properties or only a few - feel free to experiment with it!
+      Hints:
+       -  mapX where X is a number of props can be useful
+       - let ... in ... expression helps to clean your code
+-}
+-- type alias Book =
+-- book =
+{-
+   8. Sometimes you want to return const value and ignore what you find in JSON (however it must be valid JSON!)
+      You can use `succeed` or `fail` decoders.
+-}
 
 
-viewEditor noteForm =
-    div [ class "row" ]
-        [ case noteForm of
-            Nothing ->
-                div []
-                    [ button [ onClick Open, class "btn btn-default" ] [ text "New note" ]
-                    , button [ onClick RequestMoreSharks, class "btn btn-default" ] [ text "Add image" ]
-                    ]
-
-            Just data ->
-                div []
-                    [ listNotes [ TextNote data ]
-                    , Html.form [ onSubmit Add ]
-                        [ input [ class "form-input", type_ "text", placeholder "id", onInput (UpdateForm << Id) ] []
-                        , input [ class "form-input", type_ "text", placeholder "header", onInput (UpdateForm << Header) ] []
-                        , input [ class "form-input", type_ "text", placeholder "text", onInput (UpdateForm << Text) ] []
-                        , button [ onClick Add, class "btn btn-default" ] [ text "Add" ]
-                        ]
-                    ]
-        ]
+success =
+    decodeString (succeed 13) "false"
 
 
-listNotes notes =
-    ul [ class "list-group" ] <| List.map viewNote notes
+failure =
+    decodeString (fail "Custom error message") "true"
 
 
-viewNote note =
-    case note of
-        TextNote data ->
-            li [ class "list-group-item" ]
-                [ viewId data.id
-                , h3 [] [ text data.header ]
-                , text data.text
-                ]
-            
 
-        ImageNote data ->
-             li [ class "list-group-item" ]
-                [ viewId data.id
-                , img [ src data.url ] []
-                ]
-            
+{-
+   9. Decoding lists
+      Often we need to decode a list of primitive values or objects.
+      There is a list decoder for that.
+      Try to decode a list of pets based on provided petsJSON.
+-}
 
 
-viewId id =
-    div [ class "pull-right" ]
-        [ text <| toString id ]
+myList =
+    let
+        listDecoder =
+            list int
+    in
+        decodeString listDecoder "[ 1, 3, 5 ]"
 
 
-subscriptions model =
-    Sub.none
+petsJSON =
+    """
+[
+    {
+        "name": "Szarik",
+        "age": 30
+    },
+    {
+        "name": "Lessie",
+        "age": 40
+    },
+    {
+        "name": "Flipper",
+         "age": 20
+    }
+]
+"""
 
 
-insertCss =
-    Html.node "link" [ rel "stylesheet", href "styles.css" ] []
 
-
-insertBootstrap =
-    Html.node "link" [ rel "stylesheet", href "https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" ] []
+-- pets =
+{-
+   There are still many very useful decoders we haven't touched yet, to name a few: oneOf, null, maybe, index, nullable, andThen, dict, array, or lazy,
+   which you can find in the documentation (link can be found on top of this file).
+   Good luck and have fun with JSON decoders!
+-}
