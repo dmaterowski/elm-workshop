@@ -1,4 +1,4 @@
-module Ex9 exposing (..)
+module Ex10 exposing (..)
 
 import Html exposing (..)
 import Html.Attributes exposing (..)

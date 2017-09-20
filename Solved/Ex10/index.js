@@ -1,6 +1,6 @@
 "use strict";
 
-var app = Elm.Ex9.embed(document.getElementById("main"), {
+var app = Elm.Ex10.embed(document.getElementById("main"), {
   name: "Me",
   email: "me@example.com"
 });

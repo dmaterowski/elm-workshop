@@ -1,6 +1,6 @@
 module ExDecoders exposing (..)
 
-import Json.Decode exposing (..)
+import Json.Decode as Decode
 
 
 -- Short guide: https://guide.elm-lang.org/interop/json.html
@@ -27,19 +27,19 @@ import Json.Decode exposing (..)
 
 
 i =
-    decodeString int "7"
+    Decode.decodeString Decode.int "7"
 
 
 s =
-    decodeString string "\"This is my string\""
+    Decode.decodeString Decode.string "\"This is my string\""
 
 
 f =
-    decodeString float "3.14"
+    Decode.decodeString Decode.float "3.14"
 
 
 b =
-    decodeString bool "true"
+    Decode.decodeString Decode.bool "true"
 
 
 
@@ -57,7 +57,7 @@ b =
 
 
 err =
-    decodeString int "no number here"
+    Decode.decodeString Decode.int "no number here"
 
 
 
@@ -70,7 +70,7 @@ err =
 
 
 x =
-    decodeString (field "x" int) """{ "x": 1, "y": 1 }"""
+    Decode.decodeString (Decode.field "x" Decode.int) """{ "x": 1, "y": 1 }"""
 
 
 
@@ -84,7 +84,7 @@ x =
 
 
 emptyObj =
-    decodeString (field "name" string) "{}"
+    Decode.decodeString (Decode.field "name" Decode.string) "{}"
 
 
 wrongJson =
@@ -92,7 +92,7 @@ wrongJson =
 
 
 wrongProperty =
-    decodeString (field "age" int) wrongJson
+    Decode.decodeString (Decode.field "age" Decode.int) wrongJson
 
 
 
@@ -112,9 +112,9 @@ type alias Pet =
 lessie =
     let
         petDecoder =
-            map2 Pet (field "name" string) (field "age" int)
+            Decode.map2 Pet (Decode.field "name" Decode.string) (Decode.field "age" Decode.int)
     in
-        decodeString petDecoder """{ "name": "Lessie", "age": 3, "notused": true }"""
+        Decode.decodeString petDecoder """{ "name": "Lessie", "age": 3, "notused": true }"""
 
 
 
@@ -126,7 +126,7 @@ lessie =
 
 
 nested =
-    decodeString (at [ "result", "stars" ] int) """{ "result": { "stars": 17 } }"""
+    Decode.decodeString (Decode.at [ "result", "stars" ] Decode.int) """{ "result": { "stars": 17 } }"""
 
 
 json =
@@ -167,18 +167,18 @@ type alias Book =
 book =
     let
         bookDecoder =
-            map6 Book
-                (field "id" int)
-                (field "subject" string)
-                (field "author" string)
-                (field "title" string)
-                (field "kind" string)
-                (field "genre" string)
+            Decode.map6 Book
+                (Decode.field "id" Decode.int)
+                (Decode.field "subject" Decode.string)
+                (Decode.field "author" Decode.string)
+                (Decode.field "title" Decode.string)
+                (Decode.field "kind" Decode.string)
+                (Decode.field "genre" Decode.string)
 
         bookResultDecoder =
-            at [ "result", "book" ] bookDecoder
+            Decode.at [ "result", "book" ] bookDecoder
     in
-        decodeString bookResultDecoder json
+        Decode.decodeString bookResultDecoder json
 
 
 
@@ -189,11 +189,11 @@ book =
 
 
 success =
-    decodeString (succeed 13) "false"
+    Decode.decodeString (Decode.succeed 13) "false"
 
 
 failure =
-    decodeString (fail "Custom error message") "true"
+    Decode.decodeString (Decode.fail "Custom error message") "true"
 
 
 
@@ -208,9 +208,9 @@ failure =
 myList =
     let
         listDecoder =
-            list int
+            Decode.list Decode.int
     in
-        decodeString listDecoder "[ 1, 3, 5 ]"
+        Decode.decodeString listDecoder "[ 1, 3, 5 ]"
 
 
 petsJSON =
@@ -235,9 +235,9 @@ petsJSON =
 pets =
     let
         petDecoder =
-            map2 Pet (field "name" string) (field "age" int)
+            Decode.map2 Pet (Decode.field "name" Decode.string) (Decode.field "age" Decode.int)
     in
-        decodeString (list petDecoder) petsJSON
+        Decode.decodeString (Decode.list petDecoder) petsJSON
 
 
 

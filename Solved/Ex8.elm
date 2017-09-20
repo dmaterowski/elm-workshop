@@ -1,238 +1,132 @@
-module Main exposing (..)
+module ExEncoders exposing (..)
 
-import Html exposing (..)
-import Html.Attributes exposing (..)
-import Html.Events exposing (..)
-import Html.Keyed as Keyed
-import Http
-import Json.Decode as Decode
+import Array
+import Json.Encode as Encode
 
 
-main =
-    Html.program
-        { init = initial
-        , view = view
-        , update = update
-        , subscriptions = subscriptions
-        }
+-- Docs: http://package.elm-lang.org/packages/elm-lang/core/5.1.1/Json-Encode
+{-
+   Run:
+   - elm-repl
+   - import ExEncoders exposing (..)
+
+   Part 1
+   Primitive values
+   In order to encode Elm values to Json.Encode.Value type we can use useful function which can be found below
+-}
 
 
-initial =
-    ( Model defaultUser Nothing, Cmd.none )
+s =
+    Encode.string "Thix is some text"
 
 
-defaultUser =
-    User "Dan"
-        "dmaterowski@infusion.com"
-        [ TextNote { id = 1, header = "Header", text = "And some content for the sake of taking up space. And even more lines, and stuff and like you know, something meaningful." }
-        , ImageNote { id = 2, url = "https://media2.giphy.com/media/12Jbd9dZVochsQ/giphy.gif" }
-        , TextNote { id = 3, header = "I like trains!", text = "Choo choo!" }
-        ]
+i =
+    Encode.int 7
 
 
-type alias Model =
-    { user : User
-    , newNote : Maybe TextData
-    }
+f =
+    Encode.float 3.14
 
 
-type alias User =
-    { name : String
-    , email : String
-    , notes : List Note
-    }
+b =
+    Encode.bool True
 
 
-type Note
-    = TextNote TextData
-    | ImageNote ImageData
+
+-- We can have null inside Json, right?
 
 
-type alias NoteData a =
-    { a
-        | id : Int
-    }
+n =
+    Encode.null
 
 
-type alias ImageData =
-    NoteData
-        { url : String
-        }
+
+{-
+   To create list of values, use list
+-}
 
 
-type alias TextData =
-    NoteData
-        { header : String
-        , text : String
-        }
+numbersList =
+    [ 1, 2, 3 ]
+        |> List.map Encode.int
+        |> Encode.list
 
 
-type Msg
-    = Open
-    | Add
-    | UpdateForm FormChange
-    | RequestMoreSharks
-    | NewImage (Result Http.Error String)
+
+{-
+   To create object, use object function
+-}
 
 
-type FormChange
-    = Id String
-    | Header String
-    | Text String
+o =
+    [ ( "name", Encode.string "Mike" )
+    , ( "surname", Encode.string "Wazowski" )
+    , ( "id", Encode.int 123 )
+    , ( "points", numbersList )
+    ]
+        |> Encode.object
 
 
-update : Msg -> Model -> ( Model, Cmd Msg )
-update msg model =
-    case msg of
-        Open ->
-            ( { model | newNote = Just emptyTextNote }, Cmd.none )
 
-        UpdateForm formValue ->
-            ( { model | newNote = updateNote model.newNote formValue }, Cmd.none )
-
-        Add ->
-            ( { model | user = addNote model.user model.newNote, newNote = Nothing }, Cmd.none )
-
-        RequestMoreSharks ->
-            ( model, getSharks )
-
-        NewImage (Ok newUrl) ->
-            ( { model | user = addImage model.user newUrl }, Cmd.none )
-
-        NewImage (Err _) ->
-            ( model, Cmd.none )
+{-
+   In order to obtain a string with encoded JSON Value, use `encode` function.
+   Test it on all Json values from this file.
+   encode 0 val
+   0 means no indentation - feel free to experiment with this integer value!
+-}
 
 
-updateNote form formValue =
-    Maybe.map
-        (\value ->
-            case formValue of
-                Header textValue ->
-                    { value | header = textValue }
-
-                Id textValue ->
-                    let
-                        converted =
-                            String.toInt textValue |> Result.withDefault 0
-                    in
-                    { value | id = converted }
-
-                Text textValue ->
-                    { value | text = textValue }
-        )
-        form
+sStr =
+    Encode.encode 0 s
 
 
-addNote user form =
-    case form of
-        Just textData ->
-            { user | notes = TextNote textData :: user.notes }
-
-        _ ->
-            user
+iStr =
+    Encode.encode 4 i
 
 
-getSharks =
-    let
-        url =
-            "https://api.giphy.com/v1/gifs/random?api_key=dc6zaTOxFJmzC&tag=sharks"
-    in
-    Http.send NewImage (Http.get url decodeUrl)
+fStr =
+    Encode.encode 0 f
 
 
-addImage user url =
-    { user | notes = ImageNote { url = url, id = 0 } :: user.notes }
+bStr =
+    Encode.encode 0 b
 
 
-decodeUrl =
-    Decode.at [ "data", "image_url" ] Decode.string
+nStr =
+    Encode.encode 0 n
 
 
-emptyTextNote =
-    { id = 0, header = "", text = "" }
+nlStr =
+    Encode.encode 4 numbersList
 
 
-view model =
-    div []
-        [ insertCss
-        , insertBootstrap
-        , viewPage model
-        ]
+oStr =
+    Encode.encode 4 o
 
 
-viewPage model =
-    div [ class "container" ]
-        [ viewUser model.user
-        , viewEditor model.newNote
-        ]
+
+{-
+   Exercise: try to encode some nested JSON object hierarchy and check if the produced string is ok.
+-}
 
 
-viewUser user =
-    div [ class "row" ]
-        [ h1 [] [ text user.name ]
-        , h2 [] [ text user.email ]
-        , listNotes user.notes
-        ]
-
-
-viewEditor noteForm =
-    div [ class "row" ]
-        [ case noteForm of
-            Nothing ->
-                div []
-                    [ button [ onClick Open, class "btn btn-default" ] [ text "New note" ]
-                    , button [ onClick RequestMoreSharks, class "btn btn-default" ] [ text "Add image" ]
-                    ]
-
-            Just data ->
-                div []
-                    [ listNotes [ TextNote data ]
-                    , Html.form [ onSubmit Add ]
-                        [ input [ class "form-input", type_ "text", placeholder "id", onInput (UpdateForm << Id) ] []
-                        , input [ class "form-input", type_ "text", placeholder "header", onInput (UpdateForm << Header) ] []
-                        , input [ class "form-input", type_ "text", placeholder "text", onInput (UpdateForm << Text) ] []
-                        , button [ onClick Add, class "btn btn-default" ] [ text "Add" ]
-                        ]
-                    ]
-        ]
-
-
-listNotes notes =
-    Keyed.ul [ class "list-group" ] <| List.map viewNote notes
-
-
-viewNote note =
-    case note of
-        TextNote data ->
-            ( toString data.id
-            , li [ class "list-group-item" ]
-                [ viewId data.id
-                , h3 [] [ text data.header ]
-                , text data.text
+nested =
+    Encode.object
+        [ ( "data"
+          , Encode.list
+                [ Encode.object [ ( "x", Encode.int 1 ), ( "y", Encode.int 1 ) ]
+                , Encode.object [ ( "x", Encode.int 2 ), ( "y", Encode.int 2 ) ]
+                , Encode.object [ ( "x", Encode.int 3 ), ( "y", Encode.int 3 ) ]
                 ]
-            )
-
-        ImageNote data ->
-            ( toString data.url
-            , li [ class "list-group-item" ]
-                [ viewId data.id
-                , img [ src data.url ] []
-                ]
-            )
+          )
+        ]
 
 
-viewId id =
-    div [ class "pull-right" ]
-        [ text <| toString id ]
+nestedStr =
+    Encode.encode 4 nested
 
 
-subscriptions model =
-    Sub.none
 
-
-insertCss =
-    Html.node "link" [ rel "stylesheet", href "styles.css" ] []
-
-
-insertBootstrap =
-    Html.node "link" [ rel "stylesheet", href "https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" ] []
+{-
+   Such JSON object encoded as a string can be, for example, sent to a server in HTTP request body.
+-}

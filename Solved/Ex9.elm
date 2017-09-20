@@ -1,4 +1,4 @@
-port module Ex9 exposing (..)
+module Main exposing (..)
 
 import Html exposing (..)
 import Html.Attributes exposing (..)
@@ -7,12 +7,9 @@ import Html.Keyed as Keyed
 import Http
 import Json.Decode as Decode
 
-port notifyJs : String -> Cmd msg
-
-port notifiedByJs : (String -> msg) -> Sub msg
 
 main =
-    Html.programWithFlags
+    Html.program
         { init = initial
         , view = view
         , update = update
@@ -20,21 +17,18 @@ main =
         }
 
 
-initial: Flags -> (Model, Cmd msg)
-initial flags =
-    ( Model (User flags.name flags.email defaultNotes) Nothing, Cmd.none )
+initial =
+    ( Model defaultUser Nothing, Cmd.none )
 
 
-defaultNotes =
+defaultUser =
+    User "Dan"
+        "dmaterowski@infusion.com"
         [ TextNote { id = 1, header = "Header", text = "And some content for the sake of taking up space. And even more lines, and stuff and like you know, something meaningful." }
         , ImageNote { id = 2, url = "https://media2.giphy.com/media/12Jbd9dZVochsQ/giphy.gif" }
         , TextNote { id = 3, header = "I like trains!", text = "Choo choo!" }
         ]
 
-type alias Flags =
-    { email : String
-    , name : String
-    }
 
 type alias Model =
     { user : User
@@ -79,7 +73,6 @@ type Msg
     | UpdateForm FormChange
     | RequestMoreSharks
     | NewImage (Result Http.Error String)
-    | NotifiedByJs String
 
 
 type FormChange
@@ -104,13 +97,10 @@ update msg model =
             ( model, getSharks )
 
         NewImage (Ok newUrl) ->
-            ( { model | user = addImage model.user newUrl }, notifyJs newUrl )
+            ( { model | user = addImage model.user newUrl }, Cmd.none )
 
         NewImage (Err _) ->
             ( model, Cmd.none )
-
-        NotifiedByJs value ->
-            ( model, notifyJs value)
 
 
 updateNote form formValue =
@@ -164,7 +154,9 @@ emptyTextNote =
 
 view model =
     div []
-        [ viewPage model
+        [ insertCss
+        , insertBootstrap
+        , viewPage model
         ]
 
 
@@ -235,5 +227,12 @@ viewId id =
 
 
 subscriptions model =
-    notifiedByJs NotifiedByJs
+    Sub.none
 
+
+insertCss =
+    Html.node "link" [ rel "stylesheet", href "styles.css" ] []
+
+
+insertBootstrap =
+    Html.node "link" [ rel "stylesheet", href "https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" ] []
