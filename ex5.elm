@@ -9,13 +9,12 @@ import Html.Events exposing (..)
   1. if newNote has no value show button that populates newNote with empty Text data
   2. if newNote has value show 
     - representation of it, just as it would look like in main list (hint: reuse functions!)
-    - form with 3 input fields (for now using them should change anything in model)
+    - form with 3 input fields (for now using them should not change anything in model)
     - button 
   3. wire up inputs with messages that update corresponding fields in newNote 
     - hint: onInput
     - hint: Maybe.map
   4. wire up the button to add current newNote to the beginning of main list and close the form
-    - hint: 
 -}
 main =
     Html.program

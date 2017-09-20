@@ -3,9 +3,6 @@ module Main exposing (..)
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (..)
-import Http
-import Json.Decode as Decode
-
 
 
 main =
@@ -71,16 +68,14 @@ type Msg
     = Open
     | Add
     | UpdateForm FormChange
-    | RequestMoreSharks
 
-
-type FormChange
+type FormChange 
     = Id String
     | Header String
     | Text String
+    
 
-
-update : Msg -> Model -> ( Model, Cmd Msg )
+update : Msg -> Model -> ( Model, Cmd msg )
 update msg model =
     case msg of
         Open ->
@@ -91,9 +86,6 @@ update msg model =
 
         Add ->
             ( { model | user = addNote model.user model.newNote, newNote = Nothing }, Cmd.none )
-
-        RequestMoreSharks ->
-            ( model, getSharks )
 
 
 updateNote form formValue =
@@ -125,14 +117,6 @@ addNote user form =
             user
 
 
-getSharks =
-    let
-        url =
-            "https://api.giphy.com/v1/gifs/random?api_key=dc6zaTOxFJmzC&tag=sharks"
-    in
-    Cmd.none
-
-
 emptyTextNote =
     { id = 0, header = "", text = "" }
 
@@ -160,13 +144,13 @@ viewUser user =
         ]
 
 
+
 viewEditor noteForm =
     div [ class "row" ]
         [ case noteForm of
             Nothing ->
                 div []
-                    [ button [ onClick Open, class "btn btn-default" ] [ text "New note" ]
-                    , button [ onClick RequestMoreSharks, class "btn btn-default" ] [ text "Add image" ]
+                    [ button [ onClick Open, class "btn btn-default" ] [ text "Add" ]
                     ]
 
             Just data ->
@@ -194,14 +178,12 @@ viewNote note =
                 , h3 [] [ text data.header ]
                 , text data.text
                 ]
-            
 
         ImageNote data ->
-             li [ class "list-group-item" ]
+            li [ class "list-group-item" ]
                 [ viewId data.id
                 , img [ src data.url ] []
                 ]
-            
 
 
 viewId id =
