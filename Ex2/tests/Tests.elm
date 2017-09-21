@@ -3,6 +3,11 @@ module Tests exposing (..)
 import Ex2 exposing (..)
 import Expect
 import Test exposing (..)
+import Test.Runner.Html
+
+main : Test.Runner.Html.TestProgram
+main = 
+    Test.Runner.Html.run all
 
 
 all : Test
