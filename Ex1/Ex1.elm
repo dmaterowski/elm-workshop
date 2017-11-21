@@ -24,7 +24,7 @@ module Ex1 exposing (..)
 
    You will find further instructions below as inline comments.
 -}
--- 3.
+-- Ad. 3.
 
 
 x =
@@ -63,6 +63,10 @@ b =
     True
 
 
+t =
+    ( 3, "Apple" )
+
+
 
 {-
    7. In REPL you can assign new value to the variable, but in the real, compiled Elm app - this is not possible!
@@ -71,10 +75,6 @@ b =
    8. You probably saw, that `t` is a tuple - it consists of 2 or more values of possibly different types.
    This comes handy, whenever function needs to return many values. We'll get into functions in a minute.
 -}
-
-
-t =
-    ( 3, "Apple" )
 
 
 t2 =
@@ -108,8 +108,8 @@ type alias Product =
 
 
 
--- This line with colon is called `type annotation` - it annotates p2 as a Product
--- This is a good practice to annotate all expressions in our program even though Elm is smart enough to infere types on its own
+-- The line below with colon is called `type annotation` - it annotates p2 as a Product
+-- This is a good practice to annotate all expressions in our program, even though Elm is smart enough to 'guess' types
 -- This is called `type inference` - the compiler will figure out types on its own
 
 
@@ -123,9 +123,9 @@ p2 =
 
 {-
    11. FUNCTIONS
-       The idea of function is very simple - it takes input and returns output - always.
+       The idea of a function is very simple - it takes input and returns output - always.
 
-       Check out functions below:
+       Check out functions below (yes! verify that in REPL, please):
 
        boring
        boring 5
@@ -133,7 +133,7 @@ p2 =
 -}
 -- Type annotations for functions use arrows: ->
 -- It means that what is on the left side of the arrow is an input (argument)
--- what is on the right hand side of the arrow is output (result)
+-- what is on the right hand side of the arrow is an output (result)
 
 
 boring : a -> String
@@ -145,6 +145,7 @@ boring a =
 {-
    12. If you need to pass nothing, to function, you can use so called `unit`: ()
        Unit is a type and a value itself.
+       Experiment: what does happen when you apply an argument of different type to function which expects unit??
 
        getLuckyNumber
        getLuckyNumber ()
@@ -158,7 +159,7 @@ getLuckyNumber _ =
 
 
 {-
-   13. All functions in elm get one argument and return one result:
+   13. All functions in elm get one argument and return one result (I swear this is true!):
 
        add
        add 1
@@ -199,7 +200,7 @@ n =
        It allows you to prepare some locally scoped variables to be used in some expression later (example below)
        Check what is the value of calculation?
        What is the value of x?
-       Did let expression changed value of the x from the beginning?
+       Did let expression changed value of the x from the beginning of the file?
 -}
 
 
@@ -230,7 +231,7 @@ getName r =
 
 
 {-
-   17. We can specify only properties we do care about inline as function arguments - it usses `pattern matching` mechanism
+   17. We can specify properties we do care about, inline, as function arguments - it uses `pattern matching` mechanism
    getBetterName
    getBetterName p
    getBetterName p2
@@ -251,9 +252,10 @@ getBetterName { name } =
        Elm creates it for free for us!
 -}
 {-
-   19. Elm is smart enough to generalize types that is why .name has type:
+   19. Elm is smart enough to generalize types; that is why .name has type:
    <function> : { b | name : a } -> a
-   It means that record b has property name of whatever type - `a` is a type variable and it means it can be any type (this is called parametric polimorphism)
+   It means that some record 'b' has a property 'name' of whatever type.
+   `a` is a type variable and it means it can be any type (this is called parametric polimorphism)
    Try to cheat Elm:
    .name p
    .name named1
@@ -282,7 +284,7 @@ named2 =
    { p | name = "Mango" }
 
        Ensure that p is not modified at all!
-       Try to obtain p2 with name property set to your favourite fruit!
+       Try to obtain p2 with the name property set to your favourite fruit!
 
 -}
 
@@ -316,7 +318,7 @@ names =
        Small inline functions are called `lambdas`:
        inc = \x -> x + 1
 
-       Define you function mul2 which multiplies arguments by 2
+       Define you function 'mul' which multiplies arguments by 2
 -}
 
 
@@ -327,10 +329,10 @@ inc =
 
 --mul =
 {-
-   23. Finally there is a rescue from null in Elm which is called Maybe (like in the song: call me maybe ;))
-       There are two possibilities: there is a value or not:
-       Just "my value"
-       Nothing
+   23. Finally, in Elm, there is a rescue from null value, which is called Maybe (like in the song: call me maybe ;))
+       There are two possibilities:
+       - there is a value: Just "my value"
+       - or there is no value: Nothing
 -}
 
 
@@ -344,7 +346,7 @@ empty =
 
 
 {-
-   24. What if we want to write conditional code? Of course we can using different thechniques, let's start with if else expression
+   24. What if we want to write conditional code? Of course we can using different thechniques, let's start with 'if else' expression
 -}
 
 
@@ -374,16 +376,19 @@ isAdult2 x =
 {-
    26.
        Write a function which accepts Maybe
-       If there is value, return string representation of that value (use `toString` built in function)
-       If there is nothing, return "Empty" string
-       Test it for values (Just 3), (Just True), Nothing, (Just 99.9)
+       If there is a value, return string representation of that value (use `toString` built in function)
+       If there is nothing, return string "Empty"
+       Test it for values: (Just 3), (Just True), Nothing, (Just 99.9)
+       Note: you can write this function below, and whenever you save the file - it will be instantly available in repl to be run.
+       How cool is that?!
 -}
 -- maybe2str x =
 {-
-   27. Higher order functions are functions which either accept another function as an input and/or return function as an output
+   27. Higher order functions are functions which either accept another function as an input and/or return function as an output.
        Write function which accepts transformation function (for example increment) and Maybe.
-       If there is Just x, apply increment to x
-       If Nothing, return 0
-       Bonus - change increment to inline lambda function
+       If there is `Just x`, apply transformation function to `x`
+       If there is `Nothing`, return `0`
+       Bonus - change the transformation function to inline lambda function
+       Bonus 2 - instead of lambda use built-in operator - for example for addition or subtraction, etc.
 -}
 -- transformMeMaybe f x =
