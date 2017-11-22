@@ -62,8 +62,10 @@ update msg model =
     case msg of
         AskForQuote ->
             let
+                maxValue = Array.length secretQuotes - 1
+                getNthSecretQuote n = Array.get n secretQuotes
                 randomQuoteGenerator =
-                    Random.map (\n -> Array.get n secretQuotes) <| Random.int 0 (Array.length secretQuotes - 1)
+                    Random.map getNthSecretQuote <| Random.int 0 maxValue
             in
                 ( model, Random.generate ReturnQuote randomQuoteGenerator )
 

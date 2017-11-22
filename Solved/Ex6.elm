@@ -54,11 +54,12 @@ update msg model =
 callForRandomQuote : Array Quote -> Cmd Msg
 callForRandomQuote quotes =
     let
+        maxValue = Array.length secretQuotes - 1
+        getNthSecretQuote n = Array.get n secretQuotes
         randomQuoteGenerator =
-            Random.map (\n -> Array.get n quotes) <| Random.int 0 (Array.length quotes - 1)
+            Random.map getNthSecretQuote <| Random.int 0 maxValue
     in
         Random.generate ReturnQuote randomQuoteGenerator
-
 
 
 -- VIEW
