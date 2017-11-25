@@ -54,12 +54,17 @@ update msg model =
 callForRandomQuote : Array Quote -> Cmd Msg
 callForRandomQuote quotes =
     let
-        maxValue = Array.length secretQuotes - 1
-        getNthSecretQuote n = Array.get n secretQuotes
+        maxValue =
+            Array.length secretQuotes - 1
+
+        getNthSecretQuote n =
+            Array.get n secretQuotes
+
         randomQuoteGenerator =
             Random.map getNthSecretQuote <| Random.int 0 maxValue
     in
         Random.generate ReturnQuote randomQuoteGenerator
+
 
 
 -- VIEW
@@ -87,15 +92,7 @@ viewQuote model =
                     Maybe.withDefault "" <| Maybe.map .author model.quote
             in
                 div []
-                    [ blockquote
-                        [ style
-                            [ ( "border-left", "0.5em solid #cfcfcf" )
-                            , ( "padding", "0.5em" )
-                            , ( "font-family", "serif" )
-                            , ( "font-style", "italic" )
-                            ]
-                        ]
-                        [ text quoteText ]
+                    [ blockquote [ blockquoteStyles ] [ text quoteText ]
                     , div
                         [ style [ ( "margin", "1em 4.5em" ) ] ]
                         [ text quoteAuthor ]
@@ -109,14 +106,7 @@ viewButton : Html Msg
 viewButton =
     button
         [ onClick AskForQuote
-        , style
-            [ ( "margin", "0.5em 1em" )
-            , ( "padding", "0.25em 1em" )
-            , ( "background", "#cfcfcf" )
-            , ( "border-style", "none" )
-            , ( "font-family", "serif" )
-            , ( "font-weight", "bold" )
-            ]
+        , buttonStyles
         ]
         [ text "Inspire me!" ]
 
@@ -160,4 +150,26 @@ secretQuotes =
         , { text = "Programming is not a zero-sum game. Teaching something to a fellow programmer doesn’t take it away from you. I’m happy to share what I can, because I’m in it for the love of programming."
           , author = "John Carmack"
           }
+        ]
+
+
+buttonStyles : Html.Attribute msg
+buttonStyles =
+    style
+        [ ( "margin", "0.5em 1em" )
+        , ( "padding", "0.25em 1em" )
+        , ( "background", "#cfcfcf" )
+        , ( "border", "1px solid #6b6b6b" )
+        , ( "font-family", "serif" )
+        , ( "font-weight", "bold" )
+        ]
+
+
+blockquoteStyles : Html.Attribute msg
+blockquoteStyles =
+    style
+        [ ( "border-left", "0.5em solid #cfcfcf" )
+        , ( "padding", "0.5em" )
+        , ( "font-family", "serif" )
+        , ( "font-style", "italic" )
         ]
