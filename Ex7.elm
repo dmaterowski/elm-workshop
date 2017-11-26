@@ -1,10 +1,10 @@
-module ExDecoders exposing (..)
+module Ex7 exposing (..)
 
 import Json.Decode exposing (..)
 
 
 -- Short guide: https://guide.elm-lang.org/interop/json.html
--- Docs: http://package.elm-lang.org/packages/elm-lang/core/5.1.1/Json-Decode
+-- Docs: http://package.elm-lang.org/packages/elm-lang/core/latest/Json-Decode
 -- Useful library for more complicated JSON schemas: http://package.elm-lang.org/packages/NoRedInk/elm-decode-pipeline/latest
 {-
    Part 1
@@ -12,10 +12,10 @@ import Json.Decode exposing (..)
 
    Run:
    - elm-repl
-   - import ExDecoders exposing (..)
+   - import Ex7 exposing (..)
 
-   Usually JSON comes from the server as a string and needs to be parsed or decoded to JS or Elm values in our case.
-   We will use decodeString fn:
+   Usually JSON comes from the server as a string and needs to be parsed or decoded to JS (or Elm values in our case).
+   We will use decodeString function:
 
    decodeString : Decoder a -> String -> Result String a
 
@@ -45,14 +45,14 @@ b =
 
 {-
    Docs for Result type:
-   http://package.elm-lang.org/packages/elm-lang/core/5.1.1/Result
+   http://package.elm-lang.org/packages/elm-lang/core/latest/Result
 
-   Why all values above are of type: Result String val
+   Why all values above are of a type: Result String val,
    where val is Int, String, Float or Bool?
 
    2. Examine err below
 
-      Err type is a String, so String from Result above is an error message!
+      Err type is a String, so String from the Result above is an error message!
 -}
 
 
@@ -92,12 +92,13 @@ wrongJson =
 
 
 
+-- TODO decode wrongJson as described in point 4.
 -- wrongProperty =
 --     decodeString
 {-
    5. Decoding objects with multiple properties
       In Elm we need records to represent objects with multiple properties.
-      In order to decode such object we use functions map, map2, map3, ... up to 8.
+      In order to decode such object, we use functions map, map2, map3, ... up to 8.
 -}
 
 
@@ -148,7 +149,7 @@ json =
    7. Write type alias for the book record, then decode JSON listed above.
       You can use all properties or only a few - feel free to experiment with it!
       Hints:
-       -  mapX where X is a number of props can be useful
+       -  mapX, where X is a number of props can be useful
        - let ... in ... expression helps to clean your code
 -}
 -- type alias Book =
@@ -172,7 +173,7 @@ failure =
    9. Decoding lists
       Often we need to decode a list of primitive values or objects.
       There is a list decoder for that.
-      Try to decode a list of pets based on provided petsJSON.
+      Try to decode a list of pets using given petsJSON.
 -}
 
 
