@@ -1,18 +1,18 @@
-module ExEncoders exposing (..)
+module Ex8 exposing (..)
 
 import Array
 import Json.Encode as Encode
 
 
--- Docs: http://package.elm-lang.org/packages/elm-lang/core/5.1.1/Json-Encode
+-- Docs: http://package.elm-lang.org/packages/elm-lang/core/latest/Json-Encode
 {-
    Run:
    - elm-repl
-   - import ExEncoders exposing (..)
+   - import Ex8 exposing (..)
 
    Part 1
    Primitive values
-   In order to encode Elm values to Json.Encode.Value type we can use useful function which can be found below
+   In order to encode Elm values to Json.Encode.Value type, primitive values encoders can be used (see examples below).
 -}
 
 
