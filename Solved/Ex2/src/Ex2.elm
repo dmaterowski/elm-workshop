@@ -22,6 +22,7 @@ type Selection
     = Empty
     | Single String
     | Multiple (List String)
+    | Advanced String CustomItemData
 
 
 
@@ -32,7 +33,18 @@ type Selection
 
 
 selectionToValues selection =
-    []
+    case selection of
+        Empty ->
+            []
+
+        Single value ->
+            [ value ]
+
+        Multiple values ->
+            values
+
+        Advanced value data ->
+            [ value ]
 
 
 
@@ -44,7 +56,18 @@ selectionToValues selection =
 
 
 extendSelection value selection =
-    Empty
+    case selection of
+        Empty ->
+            Single value
+
+        Single original ->
+            Multiple [ value, original ]
+
+        Multiple originalValues ->
+            Multiple <| value :: originalValues
+
+        Advanced value data ->
+            selection
 
 
 
@@ -72,7 +95,15 @@ type alias CustomItemData =
 
 toSelection : List String -> Selection
 toSelection values =
-    Empty
+    case values of
+        [] ->
+            Empty
+
+        [ value ] ->
+            Single value
+
+        values ->
+            Multiple values
 
 
 
@@ -92,4 +123,7 @@ toSelection values =
 
 filteredToUppercaseString : Selection -> List String
 filteredToUppercaseString selection =
-    []
+    selection
+        |> selectionToValues
+        |> List.map String.toUpper
+        |> List.filter (\v -> v /= "BANANAS")
