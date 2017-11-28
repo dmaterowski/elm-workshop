@@ -12,8 +12,8 @@ import Html.Events exposing (onClick)
    In order to test this program, run:
    elm-reactor
 
-   And click ExCmds.elm - this file will be compiled and built for you by elm-reactor
-   Follow instructions for TODOs below
+   And click this file name - it will be compiled and built for you by elm-reactor
+   Follow instructions in TODOs below
 -}
 -- MODEL
 
@@ -39,7 +39,7 @@ model =
 {-
    TODO
    1. Load random quote once Elm has started
-   Hint - look at the second part of the tuple when there is a valid command - it will be executed by Elm Runtime during model initial load!
+   Hint - look at the second part of the tuple; when there is a valid command, it will be executed by Elm Runtime during initial model load!
 -}
 
 
@@ -62,8 +62,12 @@ update msg model =
     case msg of
         AskForQuote ->
             let
-                maxValue = Array.length secretQuotes - 1
-                getNthSecretQuote n = Array.get n secretQuotes
+                maxValue =
+                    Array.length secretQuotes - 1
+
+                getNthSecretQuote n =
+                    Array.get n secretQuotes
+
                 randomQuoteGenerator =
                     Random.map getNthSecretQuote <| Random.int 0 maxValue
             in
@@ -80,8 +84,7 @@ update msg model =
 view : Model -> Html Msg
 view model =
     div []
-        [ h1 []
-            [ text "A pinch of Elmspiration..." ]
+        [ h1 [] [ text "A pinch of Elmspiration..." ]
         , viewQuote model
         , viewButton
         ]
@@ -90,7 +93,7 @@ view model =
 
 {-
    TODO
-   2. Change viewQuote function in order to display also an author of the quote!
+   2. Change viewQuote function in order to display also an author of a quote!
 -}
 
 
@@ -99,13 +102,7 @@ viewQuote model =
     case model.quote of
         Just quote ->
             blockquote
-                [ style
-                    [ ( "border-left", "0.5em solid #cfcfcf" )
-                    , ( "padding", "0.5em" )
-                    , ( "font-family", "serif" )
-                    , ( "font-style", "italic" )
-                    ]
-                ]
+                [ blockquoteStyles ]
                 [ text <| Maybe.withDefault "" <| Maybe.map .text model.quote ]
 
         Nothing ->
@@ -116,14 +113,7 @@ viewButton : Html Msg
 viewButton =
     button
         [ onClick AskForQuote
-        , style
-            [ ( "margin", "0.5em 1em" )
-            , ( "padding", "0.25em 1em" )
-            , ( "background", "#cfcfcf" )
-            , ( "border-style", "none" )
-            , ( "font-family", "serif" )
-            , ( "font-weight", "bold" )
-            ]
+        , buttonStyles
         ]
         [ text "Inspire me!" ]
 
@@ -167,4 +157,26 @@ secretQuotes =
         , { text = "Programming is not a zero-sum game. Teaching something to a fellow programmer doesn’t take it away from you. I’m happy to share what I can, because I’m in it for the love of programming."
           , author = "John Carmack"
           }
+        ]
+
+
+buttonStyles : Html.Attribute msg
+buttonStyles =
+    style
+        [ ( "margin", "0.5em 1em" )
+        , ( "padding", "0.25em 1em" )
+        , ( "background", "#cfcfcf" )
+        , ( "border", "1px solid #6b6b6b" )
+        , ( "font-family", "serif" )
+        , ( "font-weight", "bold" )
+        ]
+
+
+blockquoteStyles : Html.Attribute msg
+blockquoteStyles =
+    style
+        [ ( "border-left", "0.5em solid #cfcfcf" )
+        , ( "padding", "0.5em" )
+        , ( "font-family", "serif" )
+        , ( "font-style", "italic" )
         ]
