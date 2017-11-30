@@ -7,6 +7,21 @@ import Http
 import Json.Decode as Decode
 
 
+{-
+    Back to notes and sharks!
+    Making calls to external world is a side-effect so both random generation and http requests are hanled by runtime.
+
+    - open url from getSharks and check format of response
+    - create a decoder that will return the image_url
+    - create a request through http://package.elm-lang.org/packages/elm-lang/http/1.0.0/Http#get
+    - generate a command to send this request with Http.send and use it in getSharks function
+
+   BONUS/Homework: have you noticed the lag when adding quickly new images?
+   As we add elements to the list, it's no longer the same object so whole list gets rerendered!
+   Take a look at http://package.elm-lang.org/packages/elm-lang/html/2.0.0/Html-Keyed and refactor your list to properly handle new items.
+
+-}
+
 
 main =
     Html.program
@@ -108,7 +123,7 @@ updateNote form formValue =
                         converted =
                             String.toInt textValue |> Result.withDefault 0
                     in
-                    { value | id = converted }
+                        { value | id = converted }
 
                 Text textValue ->
                     { value | text = textValue }
@@ -130,7 +145,7 @@ getSharks =
         url =
             "https://api.giphy.com/v1/gifs/random?api_key=dc6zaTOxFJmzC&tag=sharks"
     in
-    Cmd.none
+        Cmd.none
 
 
 emptyTextNote =
@@ -194,14 +209,12 @@ viewNote note =
                 , h3 [] [ text data.header ]
                 , text data.text
                 ]
-            
 
         ImageNote data ->
-             li [ class "list-group-item" ]
+            li [ class "list-group-item" ]
                 [ viewId data.id
                 , img [ src data.url ] []
                 ]
-            
 
 
 viewId id =

@@ -55,6 +55,12 @@ type Note
     = ImageNote ImageData
 
 
+
+{-
+   extensible record! - ImageData will contain both id and url
+-}
+
+
 type alias NoteData a =
     { a
         | id : Int
@@ -62,7 +68,9 @@ type alias NoteData a =
 
 
 type alias ImageData =
-    NoteData {}
+    NoteData
+        { url : String
+        }
 
 
 type Msg
@@ -92,7 +100,7 @@ subscriptions model =
 
 
 
--- hacking in css stylesheets - this is NOT production-level solution
+-- hacking in css stylesheets (due to elm-reactor usage) - this is NOT production-quality solution
 
 
 insertCss =

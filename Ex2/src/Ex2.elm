@@ -8,13 +8,16 @@ module Ex2 exposing (..)
    4. In `Tests.elm` is also described alternative way to run tests in your browser.
 
    Hint: you can run `elm-test --watch` to launch tests automatically, whenever any elm file changes.
+   Hint: notice the <| operator, it's defined here: http://package.elm-lang.org/packages/elm-lang/core/latest/Basics#<|
 
-   1.
+   0.
      Maybe is actually defined as:
        type Maybe a
          = Just a
          | Nothing
      "type" (in contrast to type alias) allows us to declare union types
+
+    Our application has following Selection union type that defines possible selection modes:
 -}
 
 
@@ -25,8 +28,20 @@ type Selection
 
 
 
-{- 1.
-   - <| operator is defined here: http://package.elm-lang.org/packages/elm-lang/core/latest/Basics#<|
+{-
+   Union types hold only one of possible values at the time.
+   You can split your logic based on runtime value through pattern matching with 'case' operator
+
+    something = Just "value"
+    case maybe of
+        Nothing ->
+            "Empty"
+
+        Just value ->
+            "Value: " ++ value
+
+-}
+{- 1. Fix failing tests
    - what will be the type annotation of selectionToValues?
 -}
 
@@ -50,7 +65,7 @@ extendSelection value selection =
 
 {-
    3. It turns out we need additional logic for processing of custom items!
-      Add new possible value to Selection type that holds String and CustomItemData
+      Add new possible value to Selection type that holds String and CustomItemData, name it Advanced
       - talk with your compiler to get every regression fixed
       - assume Advanced selection cannot be extended and returns original selection
 -}

@@ -4,18 +4,24 @@ import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (..)
 
+
 {-
-  Model has been extended by newNote : Maybe TextData
-  1. if newNote has no value show button that populates newNote with empty Text data
-  2. if newNote has value show 
-    - representation of it, just as it would look like in main list (hint: reuse functions!)
-    - form with 3 input fields (for now using them should not change anything in model)
-    - button 
-  3. wire up inputs with messages that update corresponding fields in newNote 
-    - hint: onInput
-    - hint: Maybe.map
-  4. wire up the button to add current newNote to the beginning of main list and close the form
+   Model has been extended by newNote record that will hold new note we are editing
+   1. if newNote has no value show button that populates newNote with empty Text data
+   2. if newNote has value show
+     - representation of it, just as it would look like in main list (hint: reuse functions!)
+     - form with 3 input fields (for now using them should not change anything in model)
+     - button
+   3. wire up inputs with messages that update corresponding fields in newNote
+     - recall how immutability in records work - we need to replace newNote with updated record (feel free to experiment in repl)
+     - start with one field, add a message that will be sent to update function
+     - hint: onInput
+     - hint: String.toInt
+     - hint: Maybe.map
+   4. wire up the button to add current newNote to the beginning of main list and close the form
 -}
+
+
 main =
     Html.program
         { init = initial

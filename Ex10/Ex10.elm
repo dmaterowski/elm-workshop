@@ -8,6 +8,26 @@ import Http
 import Json.Decode as Decode
 
 
+{-
+   1. Run elm-package install
+   2. Run elm-make Ex10.elm --output elm.js
+   This will generate js file that is referenced by index.html
+   Go ahead and see your compiled application in action.
+
+   Notice css hacks are gone and regualr index.html file format is used.
+
+   BONUS/Homework:
+   You can communicate with other js code through mechanism of ports
+   It's also possible to send values at the start of program through flags
+
+   More information: https://guide.elm-lang.org/interop/javascript.html
+
+   Use flags to pass in from index.js user name and email to your application at start
+   Use port commands to send anything to index.js and console.log it
+   Use port subscriptions to populate new text note editor
+
+-}
+
 
 main =
     Html.program
@@ -30,10 +50,12 @@ defaultUser =
         , TextNote { id = 3, header = "I like trains!", text = "Choo choo!" }
         ]
 
+
 type alias Flags =
     { email : String
     , name : String
     }
+
 
 type alias Model =
     { user : User
@@ -109,7 +131,7 @@ update msg model =
             ( model, Cmd.none )
 
         NotifiedByJs value ->
-            ( model, Cmd.none)
+            ( model, Cmd.none )
 
 
 updateNote form formValue =
@@ -124,7 +146,7 @@ updateNote form formValue =
                         converted =
                             String.toInt textValue |> Result.withDefault 0
                     in
-                    { value | id = converted }
+                        { value | id = converted }
 
                 Text textValue ->
                     { value | text = textValue }
@@ -146,7 +168,7 @@ getSharks =
         url =
             "https://api.giphy.com/v1/gifs/random?api_key=dc6zaTOxFJmzC&tag=sharks"
     in
-    Http.send NewImage (Http.get url decodeUrl)
+        Http.send NewImage (Http.get url decodeUrl)
 
 
 addImage user url =
@@ -235,4 +257,3 @@ viewId id =
 
 subscriptions model =
     Sub.none
-

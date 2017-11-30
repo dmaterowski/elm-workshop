@@ -4,12 +4,19 @@ import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (..)
 
+
 {-
-    Refactor your application to use single message for all text input update messages
-    -- remember union types can hold other union types
-    -- function composition operator will be crucial (<<) http://package.elm-lang.org/packages/elm-lang/core/5.1.1/Basics#<<
-        -- type constructors are just functions!
+   3 messages with similar functionality that only affect different field? Seems ugly.
+   Refactor your application to use single message for all text input update messages
+   - remember union types can hold other union types, e.g. 'submessages'
+       type SelectionMsg = Select String | Deselect
+       type Msg = SelectionMessage SelectionMsg
+   - function composition operator will be crucial (<<) http://package.elm-lang.org/packages/elm-lang/core/5.1.1/Basics#<<
+   - remeber union type constructors are functions! try checking type of Select from example above in repl
+   - make sure you fully understand annotations, e.g. (b -> c) -> (a -> b) -> a -> c
+
 -}
+
 
 main =
     Html.program
@@ -109,7 +116,7 @@ updateNote form msg =
                         converted =
                             String.toInt textValue |> Result.withDefault 0
                     in
-                    { value | id = converted }
+                        { value | id = converted }
 
                 UpdateText textValue ->
                     { value | text = textValue }
@@ -154,7 +161,6 @@ viewUser user =
         , h2 [] [ text user.email ]
         , listNotes user.notes
         ]
-
 
 
 viewEditor noteForm =

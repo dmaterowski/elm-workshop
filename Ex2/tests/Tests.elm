@@ -39,7 +39,7 @@ main =
 all : Test
 all =
     describe "Ex2 test suite"
-        [ describe "1. selectionParser should"
+        [ describe "1. selectionToValues should"
             [ test "return empty list for empty selection" <|
                 \_ ->
                     Expect.equal [] (selectionToValues Empty)
