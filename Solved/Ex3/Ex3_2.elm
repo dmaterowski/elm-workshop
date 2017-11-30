@@ -1,0 +1,120 @@
+module Ex3.Ex3_2 exposing (..)
+
+import Html exposing (Html, button, div, text)
+import Html.Attributes exposing (style)
+import Html.Events exposing (onClick)
+
+
+{-
+
+   Docs:
+    - http://elm-lang.org/docs/syntax
+    - http://package.elm-lang.org/packages/elm-lang/html/latest/Html
+
+   In this exercise, two-directional counter will be implemented.
+   The initial state of the counter is 0.j
+   When user clicks `+1` button, the number will be incremented.
+   When user clicks `-1` button, the number will be decremented.
+
+   You will find TODOs below.
+
+   BONUS: Try to change the color of the counter to green when it is positive, blue when equals 0, and red when is negative.
+-}
+
+
+main =
+    Html.beginnerProgram
+        { model = initModel
+        , view = view
+        , update = update
+        }
+
+
+
+-- TODO 1.
+-- Model should be the record with `counter` property of type `Int`
+
+
+type alias Model =
+    { counter : Int
+    }
+
+
+
+-- TODO 2.
+-- Discriminated union representing the Msg type should also have `Decrement` case
+
+
+type Msg
+    = Increment
+    | Decrement
+
+
+
+-- TODO 3.
+-- Model is no longer an empty record - update initModel accordingly!
+
+
+initModel : Model
+initModel =
+    Model 0
+
+
+
+-- TODO 4.
+-- update function needs to return new model based on the message
+-- case expression might be useful and see records update syntax
+
+
+update : Msg -> Model -> Model
+update msg model =
+    case msg of
+        Increment ->
+            { model | counter = model.counter + 1 }
+
+        Decrement ->
+            { model | counter = model.counter - 1 }
+
+
+
+-- TODO 5.
+-- view function takes model and should display current counter value and buttons
+-- useful stuff: div, button, text, onClick attribute, toString function (you can always experiment with it in REPL! :)
+-- Try to style all elements to make it look a bit nicer!
+
+
+view : Model -> Html Msg
+view model =
+    div [ style [ centered, bold ] ]
+        [ button [ onClick Increment ] [ text "+1" ]
+        , div
+            [ style [ margin20, getCounterColorStyle model ] ]
+            [ text (toString model.counter) ]
+        , button [ onClick Decrement ] [ text "-1" ]
+        ]
+
+
+centered =
+    ( "text-align", "center" )
+
+
+margin20 =
+    ( "margin", "20px" )
+
+
+bold =
+    ( "font-weight", "bold" )
+
+
+getCounterColorStyle : Model -> ( String, String )
+getCounterColorStyle model =
+    let
+        color =
+            if model.counter < 0 then
+                "red"
+            else if model.counter == 0 then
+                "blue"
+            else
+                "green"
+    in
+        ( "color", color )
