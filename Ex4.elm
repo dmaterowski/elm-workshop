@@ -28,7 +28,7 @@ initial =
 
 defaultUser =
     User "Dan"
-        "dmaterowski@infusion.com"
+        "elm-workshop@mostlybugless.com"
 
 
 

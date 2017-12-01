@@ -23,7 +23,7 @@ initial =
 
 defaultUser =
     User "Dan"
-        "dmaterowski@infusion.com"
+        "elm-workshop@mostlybugless.com"
         [ TextNote { id = 1, header = "Header", text = "And some content for the sake of taking up space. And even more lines, and stuff and like you know, something meaningful." }
         , ImageNote { id = 2, url = "https://media2.giphy.com/media/12Jbd9dZVochsQ/giphy.gif" }
         , TextNote { id = 3, header = "I like trains!", text = "Choo choo!" }
@@ -115,7 +115,7 @@ updateNote form formValue =
                         converted =
                             String.toInt textValue |> Result.withDefault 0
                     in
-                    { value | id = converted }
+                        { value | id = converted }
 
                 Text textValue ->
                     { value | text = textValue }
@@ -137,7 +137,7 @@ getSharks =
         url =
             "https://api.giphy.com/v1/gifs/random?api_key=dc6zaTOxFJmzC&tag=sharks"
     in
-    Http.send NewImage (Http.get url decodeUrl)
+        Http.send NewImage (Http.get url decodeUrl)
 
 
 addImage user url =
