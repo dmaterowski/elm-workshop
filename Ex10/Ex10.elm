@@ -16,7 +16,6 @@ import Json.Decode as Decode
 
    Notice css hacks are gone and regualr index.html file format is used.
 
-   BONUS/Homework:
    You can communicate with other js code through mechanism of ports
    It's also possible to send values at the start of program through flags
 

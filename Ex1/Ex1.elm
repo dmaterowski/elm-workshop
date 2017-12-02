@@ -23,6 +23,16 @@ module Ex1 exposing (..)
    import Ex1 exposing (..)
 
    You will find further instructions below as inline comments.
+
+   Important! In order to make multiline expressions in REPL you need to use '\',
+   e.g.
+   p = 4 \ ('enter')
+   q = 2
+
+   Elm is also whitespace-sensitive!
+   - when defining functions, records and other multiline expressions
+     make sure you also use indentation in following lines
+
 -}
 -- Ad. 3.
 

@@ -1,7 +1,11 @@
 .green {
-    background: green;
+  background: green;
 }
 
 .red {
-    background: red;
+  background: red;
+}
+
+img {
+  max-height: 400px;
 }
