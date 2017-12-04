@@ -120,17 +120,6 @@ productFromConstructor =
 
 
 {-
-   There is also a mechanism for getting values of properties of records using dot and name of the function, like this:
-   .name anyProductCreated
--}
-
-
-tShirtName =
-    .name productFromConstructor
-
-
-
-{-
     Function applications below will not work!
     Be careful: when the type of arguments is the same, it is easy to pass the in the wrong order!
     badProduct = Product "Name" 6
@@ -174,6 +163,7 @@ boring a =
    12. If you need to pass nothing, to function, you can use so called `unit`: ()
        Unit is a type and a value itself.
        Experiment: what does happen when you apply an argument of different type to function which expects unit??
+       NOTE: Elm functions must always take some argument (input) - even if it is just a unit: ()
 
        getLuckyNumber
        getLuckyNumber ()
@@ -211,6 +201,9 @@ add x y =
        n = 9
        increment n
        n -- do you remember about immutability??
+
+       Immutability means, that value (once bound) cannot be changed later.
+       REPL is an exception for the convienience of interactive experiments.
 -}
 
 
@@ -272,7 +265,7 @@ getBetterName { name } =
 
 
 {-
-   18. We can also uses properties names prefixed with `.` to get record's property value:
+   18. We can also use properties names prefixed with `.` to get record's property value:
        .name
        .name p
        .name p2
