@@ -118,9 +118,37 @@ type alias Product =
 
 
 
--- The line below with colon is called `type annotation` - it annotates p2 as a Product
--- This is a good practice to annotate all expressions in our program, even though Elm is smart enough to 'guess' types
--- This is called `type inference` - the compiler will figure out types on its own
+{-
+   alias name of the record (in our case this is a `Product`) is also a - so called - data constructor.
+   It means that its name is a function which, given arguments which stand for record's properties, returns the record (order does matter!)
+-}
+
+
+productFromConstructor =
+    Product 7 "T-Shirt"
+
+
+
+{-
+   There is also a mechanism for getting values of properties of records using dot and name of the function, like this:
+   .name anyProductCreated
+-}
+
+
+tShirtName =
+    .name productFromConstructor
+
+
+
+{-
+    Function applications below will not work!
+    Be careful: when the type of arguments is the same, it is easy to pass the in the wrong order!
+    badProduct = Product "Name" 6
+
+   The line below with colon is called `type annotation` - it annotates p2 as a Product
+   This is a good practice to annotate all expressions in our program, even though Elm is smart enough to 'guess' types
+   This is called `type inference` - the compiler will figure out types on its own
+-}
 
 
 p2 : Product
