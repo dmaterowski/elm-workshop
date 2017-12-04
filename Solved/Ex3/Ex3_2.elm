@@ -19,6 +19,7 @@ import Html.Events exposing (onClick)
    You will find TODOs below.
 
    BONUS: Try to change the color of the counter to green when it is positive, blue when equals 0, and red when is negative.
+   BONUS 2: Add a Reset button
 -}
 
 
@@ -48,6 +49,7 @@ type alias Model =
 type Msg
     = Increment
     | Decrement
+    | Reset
 
 
 
@@ -75,6 +77,9 @@ update msg model =
         Decrement ->
             { model | counter = model.counter - 1 }
 
+        Reset ->
+            { model | counter = 0 }
+
 
 
 -- TODO 5.
@@ -91,6 +96,8 @@ view model =
             [ style [ margin20, getCounterColorStyle model ] ]
             [ text (toString model.counter) ]
         , button [ onClick Decrement ] [ text "-1" ]
+        , Html.node "br" [] []
+        , button [ onClick Reset ] [ text "Reset" ]
         ]
 
 

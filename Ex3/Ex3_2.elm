@@ -19,6 +19,7 @@ import Html.Events exposing (onClick)
    You will find TODOs below.
 
    BONUS: Try to change the color of the counter to green when it is positive, blue when equals 0, and red when is negative.
+   BONUS 2: Add a Reset button
 -}
 
 
