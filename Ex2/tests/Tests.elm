@@ -16,14 +16,8 @@ import Ex2 exposing (..)
        5. Refresh, when you make changes to your elm files
 
 
-    Ellie fallback
+    If you have problems, ask or try Ellie fallback (instructions at the end of the file)
 
-    It is possible to run these tests and whole exercise 2 in Ellie
-    1. Go to: https://ellie-app.com/new
-    2. Install packages: core, html, html-test-runner (community version), elm-test, eeue56/elm-html-test
-    3. Replace Elm code in online editor with content of Ex2.elm and Tests.elm files
-    4. Move all imports to the top of the file (remove import of Ex2)
-    5. Change Html - use the name of the module: `var app = Elm.Ex2.fullscreen()` (or whatever your online module is called!)
 -}
 
 
@@ -46,7 +40,7 @@ all =
             , test "return single item for single selection" <|
                 \_ ->
                     Expect.equal [ "single" ] (selectionToValues <| Single "single")
-            , test "return all items for single selection" <|
+            , test "return all items for multiple selection" <|
                 \_ ->
                     Expect.equal [ "one", "two", "three" ] (selectionToValues <| Multiple [ "one", "two", "three" ])
             ]
@@ -107,3 +101,18 @@ all =
         --             |> Expect.false "Expected list to not contain BANANAS"
         --     ]
         ]
+
+
+
+{-
+
+   Ellie fallback
+
+   It is possible to run these tests and whole exercise 2 in Ellie
+   1. Go to: https://ellie-app.com/new
+   2. Install packages: core, html, html-test-runner (community version), elm-test, eeue56/elm-html-test
+   3. Replace Elm code in online editor with content of Ex2.elm and Tests.elm files
+   4. Move all imports to the top of the file (remove import of Ex2)
+   5. Change Html - use the name of the module: `var app = Elm.Ex2.fullscreen()` (or whatever your online module is called!)
+
+-}

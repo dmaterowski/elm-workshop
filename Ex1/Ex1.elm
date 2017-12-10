@@ -118,9 +118,26 @@ type alias Product =
 
 
 
--- The line below with colon is called `type annotation` - it annotates p2 as a Product
--- This is a good practice to annotate all expressions in our program, even though Elm is smart enough to 'guess' types
--- This is called `type inference` - the compiler will figure out types on its own
+{-
+   alias name of the record (in our case this is a `Product`) is also a - so called - data constructor.
+   It means that its name is a function which, given arguments which stand for record's properties, returns the record (order does matter!)
+-}
+
+
+productFromConstructor =
+    Product 7 "T-Shirt"
+
+
+
+{-
+    Function applications below will not work!
+    Be careful: when the type of arguments is the same, it is easy to pass the in the wrong order!
+    badProduct = Product "Name" 6
+
+   The line below with colon is called `type annotation` - it annotates p2 as a Product
+   This is a good practice to annotate all expressions in our program, even though Elm is smart enough to 'guess' types
+   This is called `type inference` - the compiler will figure out types on its own
+-}
 
 
 p2 : Product
@@ -156,6 +173,7 @@ boring a =
    12. If you need to pass nothing, to function, you can use so called `unit`: ()
        Unit is a type and a value itself.
        Experiment: what does happen when you apply an argument of different type to function which expects unit??
+       NOTE: Elm functions must always take some argument (input) - even if it is just a unit: ()
 
        getLuckyNumber
        getLuckyNumber ()
@@ -193,6 +211,9 @@ add x y =
        n = 9
        increment n
        n -- do you remember about immutability??
+
+       Immutability means, that value (once bound) cannot be changed later.
+       REPL is an exception for the convienience of interactive experiments.
 -}
 
 
@@ -254,7 +275,7 @@ getBetterName { name } =
 
 
 {-
-   18. We can also uses properties names prefixed with `.` to get record's property value:
+   18. We can also use properties names prefixed with `.` to get record's property value:
        .name
        .name p
        .name p2
