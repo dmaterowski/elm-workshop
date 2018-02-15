@@ -26,8 +26,10 @@ module Ex1 exposing (..)
 
    Important! In order to make multiline expressions in REPL you need to use '\',
    e.g.
-   p = 4 \ ('enter')
-   q = 2
+   let \ ('enter')
+     x = 3 \ ('enter')
+   in \ ('enter')
+     x + 4 \ ('enter')
 
    Elm is also whitespace-sensitive!
    - when defining functions, records and other multiline expressions
@@ -202,7 +204,7 @@ add x y =
 
 
 {-
-   14. As you saw earlier, you can partially apply function and it reutrns another function.
+   14. As you saw earlier, you can partially apply function and it returns another function.
 
        increment = add 1
        increment
