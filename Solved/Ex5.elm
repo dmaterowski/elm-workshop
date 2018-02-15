@@ -14,7 +14,7 @@ main =
 
 
 initial =
-    ( Model defaultUser Nothing, Cmd.none )
+    Model defaultUser Nothing
 
 
 defaultUser =

@@ -6,16 +6,15 @@ import Html.Events exposing (..)
 
 
 main =
-    Html.program
-        { init = initial
+    Html.beginnerProgram
+        { model = initial
         , view = view
         , update = update
-        , subscriptions = subscriptions
         }
 
 
 initial =
-    ( Model defaultUser Nothing, Cmd.none )
+    Model defaultUser Nothing
 
 
 defaultUser =
@@ -76,17 +75,17 @@ type FormChange
     | Text String
 
 
-update : Msg -> Model -> ( Model, Cmd msg )
+update : Msg -> Model -> Model
 update msg model =
     case msg of
         Open ->
-            ( { model | newNote = Just emptyTextNote }, Cmd.none )
+            { model | newNote = Just emptyTextNote }
 
         UpdateForm formValue ->
-            ( { model | newNote = updateNote model.newNote formValue }, Cmd.none )
+            { model | newNote = updateNote model.newNote formValue }
 
         Add ->
-            ( { model | user = addNote model.user model.newNote, newNote = Nothing }, Cmd.none )
+            { model | user = addNote model.user model.newNote, newNote = Nothing }
 
 
 updateNote form formValue =
