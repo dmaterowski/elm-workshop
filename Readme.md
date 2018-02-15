@@ -4,6 +4,8 @@
 
 [Basics package - reference](http://package.elm-lang.org/packages/elm-lang/core/latest/Basics)
 
+[FAQ](http://faq.elm-community.org/)
+
 ### Elm fundamentals
 
 [Elm website](http://elm-lang.org/)
