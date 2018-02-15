@@ -5,16 +5,15 @@ import Html.Attributes exposing (..)
 
 
 main =
-    Html.program
-        { init = initial
+    Html.beginnerProgram
+        { model = initial
         , view = view
         , update = update
-        , subscriptions = subscriptions
         }
 
 
 initial =
-    ( Model defaultUser, Cmd.none )
+    Model defaultUser
 
 
 defaultUser =
@@ -67,7 +66,7 @@ type Msg
 
 
 update msg model =
-    ( model, Cmd.none )
+    model
 
 
 view model =
@@ -109,10 +108,6 @@ viewNote note =
 viewId id =
     div [ class "pull-right" ]
         [ text <| toString id ]
-
-
-subscriptions model =
-    Sub.none
 
 
 insertCss =

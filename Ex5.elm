@@ -23,16 +23,15 @@ import Html.Events exposing (..)
 
 
 main =
-    Html.program
-        { init = initial
+    Html.beginnerProgram
+        { model = initial
         , view = view
         , update = update
-        , subscriptions = subscriptions
         }
 
 
 initial =
-    ( Model defaultUser Nothing, Cmd.none )
+    Model defaultUser Nothing
 
 
 defaultUser =
@@ -85,9 +84,9 @@ type Msg
     = Noop
 
 
-update : Msg -> Model -> ( Model, Cmd msg )
+update : Msg -> Model -> Model
 update msg model =
-    ( model, Cmd.none )
+    model
 
 
 view model =
@@ -141,10 +140,6 @@ viewNote note =
 viewId id =
     div [ class "pull-right" ]
         [ text <| toString id ]
-
-
-subscriptions model =
-    Sub.none
 
 
 insertCss =

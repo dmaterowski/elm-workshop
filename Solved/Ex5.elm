@@ -6,11 +6,10 @@ import Html.Events exposing (..)
 
 
 main =
-    Html.program
-        { init = initial
+    Html.beginnerProgram
+        { model = initial
         , view = view
         , update = update
-        , subscriptions = subscriptions
         }
 
 
@@ -72,23 +71,23 @@ type Msg
     | UpdateText String
 
 
-update : Msg -> Model -> ( Model, Cmd msg )
+update : Msg -> Model -> Model
 update msg model =
     case msg of
         Open ->
-            ( { model | newNote = Just emptyTextNote }, Cmd.none )
+            { model | newNote = Just emptyTextNote }
 
         UpdateHeader value ->
-            ( { model | newNote = updateNote model.newNote msg }, Cmd.none )
+            { model | newNote = updateNote model.newNote msg }
 
         UpdateId value ->
-            ( { model | newNote = updateNote model.newNote msg }, Cmd.none )
+            { model | newNote = updateNote model.newNote msg }
 
         UpdateText value ->
-            ( { model | newNote = updateNote model.newNote msg }, Cmd.none )
+            { model | newNote = updateNote model.newNote msg }
 
         Add ->
-            ( { model | user = addNote model.user model.newNote, newNote = Nothing }, Cmd.none )
+            { model | user = addNote model.user model.newNote, newNote = Nothing }
 
 
 updateNote form msg =
@@ -194,10 +193,6 @@ viewNote note =
 viewId id =
     div [ class "pull-right" ]
         [ text <| toString id ]
-
-
-subscriptions model =
-    Sub.none
 
 
 insertCss =

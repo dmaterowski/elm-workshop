@@ -192,7 +192,7 @@ add x y =
 
 
 {-
-   14. As you saw earlier, you can partially apply function and it reutrns another function.
+   14. As you saw earlier, you can partially apply function and it returns another function.
 
        increment = add 1
        increment
