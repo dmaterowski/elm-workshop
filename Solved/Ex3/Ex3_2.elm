@@ -12,7 +12,7 @@ import Html.Events exposing (onClick)
     - http://package.elm-lang.org/packages/elm-lang/html/latest/Html
 
    In this exercise, two-directional counter will be implemented.
-   The initial state of the counter is 0.j
+   The initial state of the counter is 0.
    When user clicks `+1` button, the number will be incremented.
    When user clicks `-1` button, the number will be decremented.
 
