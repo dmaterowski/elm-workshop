@@ -66,9 +66,13 @@ type alias TextData =
 type Msg
     = Open
     | Add
-    | UpdateHeader String
-    | UpdateId String
-    | UpdateText String
+    | FormUpdated FormChange
+
+
+type FormChange
+    = Id String
+    | Header String
+    | Text String
 
 
 update : Msg -> Model -> Model
@@ -77,43 +81,37 @@ update msg model =
         Open ->
             { model | newNote = Just emptyTextNote }
 
-        UpdateHeader value ->
-            { model | newNote = updateNote model.newNote msg }
-
-        UpdateId value ->
-            { model | newNote = updateNote model.newNote msg }
-
-        UpdateText value ->
-            { model | newNote = updateNote model.newNote msg }
+        FormUpdated formChange ->
+            { model | newNote = updateEditor model.newNote formChange }
 
         Add ->
-            { model | user = addNote model.user model.newNote, newNote = Nothing }
+            { model
+                | user = updateUserWithNewNote model.user model.newNote
+                , newNote = Nothing
+            }
 
 
-updateNote form msg =
+updateEditor form formChange =
     Maybe.map
         (\value ->
-            case msg of
-                UpdateHeader textValue ->
+            case formChange of
+                Header textValue ->
                     { value | header = textValue }
 
-                UpdateId textValue ->
+                Id textValue ->
                     let
                         converted =
                             String.toInt textValue |> Result.withDefault 0
                     in
-                        { value | id = converted }
+                    { value | id = converted }
 
-                UpdateText textValue ->
+                Text textValue ->
                     { value | text = textValue }
-
-                _ ->
-                    value
         )
         form
 
 
-addNote user form =
+updateUserWithNewNote user form =
     case form of
         Just textData ->
             { user | notes = TextNote textData :: user.notes }
@@ -161,10 +159,10 @@ viewEditor noteForm =
                 div []
                     [ listNotes [ TextNote data ]
                     , Html.form [ onSubmit Add ]
-                        [ input [ class "form-input", type_ "text", placeholder "id", onInput UpdateId ] []
-                        , input [ class "form-input", type_ "text", placeholder "header", onInput UpdateHeader ] []
-                        , input [ class "form-input", type_ "text", placeholder "text", onInput UpdateText ] []
-                        , button [ onClick Add, class "btn btn-default" ] [ text "Add" ]
+                        [ input [ class "form-input", type_ "text", placeholder "id", onInput (FormUpdated << Id) ] []
+                        , input [ class "form-input", type_ "text", placeholder "header", onInput (FormUpdated << Header) ] []
+                        , input [ class "form-input", type_ "text", placeholder "text", onInput (FormUpdated << Text) ] []
+                        , div [ onClick Add, class "btn btn-default" ] [ text "Add" ]
                         ]
                     ]
         ]

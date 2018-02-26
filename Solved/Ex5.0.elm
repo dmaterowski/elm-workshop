@@ -14,7 +14,7 @@ main =
 
 
 initial =
-    Model defaultUser Nothing
+    Model defaultUser <| Just { id = 1, header = "Testing input", text = "Note text" }
 
 
 defaultUser =
@@ -64,61 +64,12 @@ type alias TextData =
 
 
 type Msg
-    = Open
-    | Add
-    | UpdateForm FormChange
-
-
-type FormChange
-    = Id String
-    | Header String
-    | Text String
+    = Noop
 
 
 update : Msg -> Model -> Model
 update msg model =
-    case msg of
-        Open ->
-            { model | newNote = Just emptyTextNote }
-
-        UpdateForm formValue ->
-            { model | newNote = updateNote model.newNote formValue }
-
-        Add ->
-            { model | user = addNote model.user model.newNote, newNote = Nothing }
-
-
-updateNote form formValue =
-    Maybe.map
-        (\value ->
-            case formValue of
-                Header textValue ->
-                    { value | header = textValue }
-
-                Id textValue ->
-                    let
-                        converted =
-                            String.toInt textValue |> Result.withDefault 0
-                    in
-                        { value | id = converted }
-
-                Text textValue ->
-                    { value | text = textValue }
-        )
-        form
-
-
-addNote user form =
-    case form of
-        Just textData ->
-            { user | notes = TextNote textData :: user.notes }
-
-        _ ->
-            user
-
-
-emptyTextNote =
-    { id = 0, header = "", text = "" }
+    model
 
 
 view model =
@@ -149,17 +100,16 @@ viewEditor noteForm =
         [ case noteForm of
             Nothing ->
                 div []
-                    [ button [ onClick Open, class "btn btn-default" ] [ text "Add" ]
+                    [ button [ class "btn btn-default" ] [ text "Add" ]
                     ]
 
             Just data ->
                 div []
-                    [ listNotes [ TextNote data ]
-                    , Html.form [ onSubmit Add ]
-                        [ input [ class "form-input", type_ "text", placeholder "id", onInput (UpdateForm << Id) ] []
-                        , input [ class "form-input", type_ "text", placeholder "header", onInput (UpdateForm << Header) ] []
-                        , input [ class "form-input", type_ "text", placeholder "text", onInput (UpdateForm << Text) ] []
-                        , button [ onClick Add, class "btn btn-default" ] [ text "Add" ]
+                    [ Html.form []
+                        [ input [ class "form-input", type_ "text", placeholder "id", value <| toString data.id ] []
+                        , input [ class "form-input", type_ "text", placeholder "header", value data.header ] []
+                        , input [ class "form-input", type_ "text", placeholder "text", value data.text ] []
+                        , div [ class "btn btn-default" ] [ text "Add" ]
                         ]
                     ]
         ]
@@ -188,10 +138,6 @@ viewNote note =
 viewId id =
     div [ class "pull-right" ]
         [ text <| toString id ]
-
-
-subscriptions model =
-    Sub.none
 
 
 insertCss =

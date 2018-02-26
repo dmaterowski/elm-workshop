@@ -5,19 +5,6 @@ import Html.Attributes exposing (..)
 import Html.Events exposing (..)
 
 
-{-
-   3 messages with similar functionality that only affect different field? Seems ugly.
-   Refactor your application to use single message for all text input update messages
-   - remember union types can hold other union types, e.g. 'submessages'
-       type SelectionMsg = Select String | Deselect
-       type Msg = SelectionMessage SelectionMsg
-   - function composition operator will be crucial (<<) http://package.elm-lang.org/packages/elm-lang/core/5.1.1/Basics#<<
-   - remeber union type constructors are functions! try checking type of Select from example above in repl
-   - make sure you fully understand annotations, e.g. (b -> c) -> (a -> b) -> a -> c
-
--}
-
-
 main =
     Html.beginnerProgram
         { model = initial
@@ -91,19 +78,22 @@ update msg model =
             { model | newNote = Just emptyTextNote }
 
         UpdateHeader value ->
-            { model | newNote = updateNote model.newNote msg }
+            { model | newNote = updateEditor model.newNote msg }
 
         UpdateId value ->
-            { model | newNote = updateNote model.newNote msg }
+            { model | newNote = updateEditor model.newNote msg }
 
         UpdateText value ->
-            { model | newNote = updateNote model.newNote msg }
+            { model | newNote = updateEditor model.newNote msg }
 
         Add ->
-            { model | user = addNote model.user model.newNote, newNote = Nothing }
+            { model
+                | user = updateUserWithNewNote model.user model.newNote
+                , newNote = Nothing
+            }
 
 
-updateNote form msg =
+updateEditor form msg =
     Maybe.map
         (\value ->
             case msg of
@@ -115,7 +105,7 @@ updateNote form msg =
                         converted =
                             String.toInt textValue |> Result.withDefault 0
                     in
-                        { value | id = converted }
+                    { value | id = converted }
 
                 UpdateText textValue ->
                     { value | text = textValue }
@@ -126,7 +116,7 @@ updateNote form msg =
         form
 
 
-addNote user form =
+updateUserWithNewNote user form =
     case form of
         Just textData ->
             { user | notes = TextNote textData :: user.notes }
@@ -177,7 +167,7 @@ viewEditor noteForm =
                         [ input [ class "form-input", type_ "text", placeholder "id", onInput UpdateId ] []
                         , input [ class "form-input", type_ "text", placeholder "header", onInput UpdateHeader ] []
                         , input [ class "form-input", type_ "text", placeholder "text", onInput UpdateText ] []
-                        , button [ onClick Add, class "btn btn-default" ] [ text "Add" ]
+                        , div [ onClick Add, class "btn btn-default" ] [ text "Add" ]
                         ]
                     ]
         ]

@@ -6,19 +6,16 @@ import Html.Events exposing (..)
 
 
 {-
-   Model has been extended by newNote record that will hold new note we are editing
-   1. if newNote has no value show button that populates newNote with empty Text data
-   2. if newNote has value show
-     - representation of it, just as it would look like in main list (hint: reuse functions!)
-     - form with 3 input fields (for now using them should not change anything in model)
-     - button
-   3. wire up inputs with messages that update corresponding fields in newNote
-     - recall how immutability in records work - we need to replace newNote with updated record (feel free to experiment in repl)
-     - start with one field, add a message that will be sent to update function
-     - hint: onInput
-     - hint: String.toInt
-     - hint: Maybe.map
-   4. wire up the button to add current newNote to the beginning of main list and close the form
+   We are back to the beautiful and safe world of safe types!
+   Messages are now typed, and even carry information.
+
+   1. Take a look at documentation for onInput
+   2. Implement updating of new note in editor
+        - try rendering currently edited note with already existing functions
+        - hint: you >maybe< will need to >map< some things
+        - String.toInt returns result which can also be mapped / defaulted
+
+    Optional homework: add red border to id input if provided value is not a number
 -}
 
 
@@ -81,12 +78,39 @@ type alias TextData =
 
 
 type Msg
-    = Noop
+    = Open
+    | Add
+    | UpdateHeader String
 
 
 update : Msg -> Model -> Model
 update msg model =
-    model
+    case msg of
+        Open ->
+            { model | newNote = Just emptyTextNote }
+
+        UpdateHeader value ->
+            { model | newNote = updateEditor model.newNote msg }
+
+        Add ->
+            { model | user = updateUserWithNewNote model.user model.newNote, newNote = Nothing }
+
+
+updateEditor form msg =
+    form
+
+
+updateUserWithNewNote user form =
+    case form of
+        Just textData ->
+            { user | notes = TextNote textData :: user.notes }
+
+        _ ->
+            user
+
+
+emptyTextNote =
+    { id = 0, header = "", text = "" }
 
 
 view model =
@@ -114,7 +138,23 @@ viewUser user =
 
 viewEditor noteForm =
     div [ class "row" ]
-        []
+        [ case noteForm of
+            Nothing ->
+                div []
+                    [ button [ onClick Open, class "btn btn-default" ] [ text "Add" ]
+                    ]
+
+            Just data ->
+                div []
+                    [ listNotes [ TextNote data ]
+                    , Html.form [ onSubmit Add ]
+                        [ input [ class "form-input", type_ "text", placeholder "id" ] []
+                        , input [ class "form-input", type_ "text", placeholder "header", onInput UpdateHeader ] []
+                        , input [ class "form-input", type_ "text", placeholder "text" ] []
+                        , div [ onClick Add, class "btn btn-default" ] [ text "Add" ]
+                        ]
+                    ]
+        ]
 
 
 listNotes notes =
