@@ -5,6 +5,9 @@ import Html.Events exposing (onClick)
 
 
 {-
+
+   1. Run elm-reactor and select this file
+
    Docs:
        - https://guide.elm-lang.org/architecture/
        - http://elm-lang.org/docs/syntax
