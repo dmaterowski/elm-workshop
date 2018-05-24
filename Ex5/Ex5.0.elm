@@ -6,16 +6,13 @@ import Html.Events exposing (..)
 
 
 {-
-
-   [! Let us know if you are already here but we did not explain the model->view->update on flipchart !]
-
-   You will usually encounter Update function that takes message of union type, from convention 'Msg'
-   Let's start with basics and use string to carry information from . Have you ever used Redux?
-
-   1. Annotate View* functions - notice the Html String
-   2. Implement handling of OpenEditor message - populate newNote with sample note on user's click
-   3. Implement add button for populated editor - append notes list with editor's content
-
+   Model has been extended by newNote record that will hold new note we are editing
+   1. if newNote has no value show button with text "Add"
+   2. if newNote has value show
+     - form with 3 input fields (for now using them should not change anything in model)
+     - button with text "Add"
+     Modify the model manually to test it
+    Hint: 'value' and 'placeholder' can be found in Html.Attributes
 -}
 
 
@@ -58,33 +55,26 @@ type Note
     | ImageNote ImageData
 
 
-type alias NoteData a =
-    { a
-        | id : Int
+type alias ImageData =
+    { id : Int
+    , url : String
     }
 
 
-type alias ImageData =
-    NoteData
-        { url : String
-        }
-
-
 type alias TextData =
-    NoteData
-        { header : String
-        , text : String
-        }
+    { id : Int
+    , header : String
+    , text : String
+    }
 
 
-update : String -> Model -> Model
+type Msg
+    = Noop
+
+
+update : Msg -> Model -> Model
 update msg model =
-    case msg of
-        "OpenEditor" ->
-            model
-
-        _ ->
-            model
+    model
 
 
 view model =
@@ -112,22 +102,7 @@ viewUser user =
 
 viewEditor noteForm =
     div [ class "row" ]
-        [ case noteForm of
-            Nothing ->
-                div []
-                    [ button [ class "btn btn-default", onClick "OpenEditor" ] [ text "Add" ]
-                    ]
-
-            Just data ->
-                div []
-                    [ Html.form []
-                        [ input [ class "form-input", type_ "text", placeholder "id", value <| toString data.id ] []
-                        , input [ class "form-input", type_ "text", placeholder "header", value data.header ] []
-                        , input [ class "form-input", type_ "text", placeholder "text", value data.text ] []
-                        , div [ class "btn btn-default" ] [ text "Add" ]
-                        ]
-                    ]
-        ]
+        []
 
 
 listNotes notes =
