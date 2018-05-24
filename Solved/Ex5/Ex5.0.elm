@@ -14,7 +14,7 @@ main =
 
 
 initial =
-    Model defaultUser Nothing
+    Model defaultUser <| Just { id = 1, header = "Testing input", text = "Note text" }
 
 
 defaultUser =
@@ -44,89 +44,26 @@ type Note
     | ImageNote ImageData
 
 
-type alias NoteData a =
-    { a
-        | id : Int
+type alias ImageData =
+    { id : Int
+    , url : String
     }
 
 
-type alias ImageData =
-    NoteData
-        { url : String
-        }
-
-
 type alias TextData =
-    NoteData
-        { header : String
-        , text : String
-        }
+    { id : Int
+    , header : String
+    , text : String
+    }
 
 
 type Msg
-    = Open
-    | Add
-    | UpdateHeader String
-    | UpdateId String
-    | UpdateText String
+    = Noop
 
 
 update : Msg -> Model -> Model
 update msg model =
-    case msg of
-        Open ->
-            { model | newNote = Just emptyTextNote }
-
-        UpdateHeader value ->
-            { model | newNote = updateEditor model.newNote msg }
-
-        UpdateId value ->
-            { model | newNote = updateEditor model.newNote msg }
-
-        UpdateText value ->
-            { model | newNote = updateEditor model.newNote msg }
-
-        Add ->
-            { model
-                | user = updateUserWithNewNote model.user model.newNote
-                , newNote = Nothing
-            }
-
-
-updateEditor form msg =
-    Maybe.map
-        (\value ->
-            case msg of
-                UpdateHeader textValue ->
-                    { value | header = textValue }
-
-                UpdateId textValue ->
-                    let
-                        converted =
-                            String.toInt textValue |> Result.withDefault 0
-                    in
-                    { value | id = converted }
-
-                UpdateText textValue ->
-                    { value | text = textValue }
-
-                _ ->
-                    value
-        )
-        form
-
-
-updateUserWithNewNote user form =
-    case form of
-        Just textData ->
-            { user | notes = TextNote textData :: user.notes }
-
-        _ ->
-            user
-
-
-emptyTextNote =
-    { id = 0, header = "", text = "" }
+    model
 
 
 view model =
@@ -157,17 +94,16 @@ viewEditor noteForm =
         [ case noteForm of
             Nothing ->
                 div []
-                    [ button [ onClick Open, class "btn btn-default" ] [ text "Add" ]
+                    [ button [ class "btn btn-default" ] [ text "Add" ]
                     ]
 
             Just data ->
                 div []
-                    [ listNotes [ TextNote data ]
-                    , Html.form [ onSubmit Add ]
-                        [ input [ class "form-input", type_ "text", placeholder "id", onInput UpdateId ] []
-                        , input [ class "form-input", type_ "text", placeholder "header", onInput UpdateHeader ] []
-                        , input [ class "form-input", type_ "text", placeholder "text", onInput UpdateText ] []
-                        , div [ onClick Add, class "btn btn-default" ] [ text "Add" ]
+                    [ Html.form []
+                        [ input [ class "form-input", type_ "text", placeholder "id", value <| toString data.id ] []
+                        , input [ class "form-input", type_ "text", placeholder "header", value data.header ] []
+                        , input [ class "form-input", type_ "text", placeholder "text", value data.text ] []
+                        , div [ class "btn btn-default" ] [ text "Add" ]
                         ]
                     ]
         ]

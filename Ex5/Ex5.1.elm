@@ -2,6 +2,21 @@ module Main exposing (..)
 
 import Html exposing (..)
 import Html.Attributes exposing (..)
+import Html.Events exposing (..)
+
+
+{-
+
+   [! Let us know if you are already here but we did not explain the model->view->update on flipchart !]
+
+   You will usually encounter Update function that takes message of union type, from convention 'Msg'
+   Let's start with basics and use string to carry information from . Have you ever used Redux?
+
+   1. Annotate View* functions - notice the Html String
+   2. Implement handling of OpenEditor message - populate newNote with sample note on user's click
+   3. Implement add button for populated editor - append notes list with editor's content
+
+-}
 
 
 main =
@@ -13,7 +28,7 @@ main =
 
 
 initial =
-    Model defaultUser
+    Model defaultUser Nothing
 
 
 defaultUser =
@@ -27,6 +42,7 @@ defaultUser =
 
 type alias Model =
     { user : User
+    , newNote : Maybe TextData
     }
 
 
@@ -55,27 +71,56 @@ type alias TextData =
     }
 
 
-type Msg
-    = None
-
-
+update : String -> Model -> Model
 update msg model =
-    model
+    case msg of
+        "OpenEditor" ->
+            model
+
+        _ ->
+            model
 
 
 view model =
     div []
         [ insertCss
         , insertBootstrap
-        , viewUser model.user
+        , viewPage model
+        ]
+
+
+viewPage model =
+    div [ class "container" ]
+        [ viewUser model.user
+        , viewEditor model.newNote
         ]
 
 
 viewUser user =
-    div [ class "container" ]
+    div [ class "row" ]
         [ h1 [] [ text user.name ]
         , h2 [] [ text user.email ]
         , listNotes user.notes
+        ]
+
+
+viewEditor noteForm =
+    div [ class "row" ]
+        [ case noteForm of
+            Nothing ->
+                div []
+                    [ button [ class "btn btn-default", onClick "OpenEditor" ] [ text "Add" ]
+                    ]
+
+            Just data ->
+                div []
+                    [ Html.form []
+                        [ input [ class "form-input", type_ "text", placeholder "id", value <| toString data.id ] []
+                        , input [ class "form-input", type_ "text", placeholder "header", value data.header ] []
+                        , input [ class "form-input", type_ "text", placeholder "text", value data.text ] []
+                        , div [ class "btn btn-default" ] [ text "Add" ]
+                        ]
+                    ]
         ]
 
 
