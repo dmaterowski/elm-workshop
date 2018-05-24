@@ -54,22 +54,10 @@ type Note
     = ImageNote ImageData
 
 
-
-{-
-   extensible record! - ImageData will contain both id and url
--}
-
-
-type alias NoteData a =
-    { a
-        | id : Int
-    }
-
-
 type alias ImageData =
-    NoteData
-        { url : String
-        }
+    { id : Int
+    , url : String
+    }
 
 
 type Msg

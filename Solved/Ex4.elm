@@ -42,23 +42,17 @@ type Note
     | ImageNote ImageData
 
 
-type alias NoteData a =
-    { a
-        | id : Int
+type alias ImageData =
+    { id : Int
+    , url : String
     }
 
 
-type alias ImageData =
-    NoteData
-        { url : String
-        }
-
-
 type alias TextData =
-    NoteData
-        { header : String
-        , text : String
-        }
+    { id : Int
+    , header : String
+    , text : String
+    }
 
 
 type Msg
