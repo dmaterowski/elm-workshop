@@ -2,7 +2,6 @@
     "type": "application",
     "source-directories": [
         ".",
-        "Ex2",
         "Ex3",
         "Ex5",
         "Ex10",
@@ -23,7 +22,11 @@
         }
     },
     "test-dependencies": {
-        "direct": {},
-        "indirect": {}
+        "direct": {
+            "elm-explorations/test": "1.1.0"
+        },
+        "indirect": {
+            "elm/random": "1.0.0"
+        }
     }
 }

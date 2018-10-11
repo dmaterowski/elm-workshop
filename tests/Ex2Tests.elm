@@ -1,9 +1,8 @@
-module Tests exposing (..)
+module Ex2Tests exposing (..)
 
 import Expect
 import Fuzz exposing (Fuzzer, list, string)
 import Test exposing (..)
-import Test.Runner.Html
 import Ex2 exposing (..)
 
 
@@ -21,9 +20,10 @@ import Ex2 exposing (..)
 -}
 
 
-main : Test.Runner.Html.TestProgram
-main =
-    Test.Runner.Html.run all
+-- TODO
+-- main : Test.Runner.Html.TestProgram
+-- main =
+--     Test.Runner.Html.run all
 
 
 
@@ -68,9 +68,9 @@ all =
         --             Expect.equal (Multiple [ "first", "second" ]) (toSelection [ "first", "second" ])
         --     ]
         -- , describe "4. filteredToUppercaseString should"
-        --     ( let testFiltering = \expected selection -> test ("process value of" ++ toString selection) <|
-        --         \_ ->
-        --             Expect.equal expected (filteredToUppercaseString selection)
+        --     ( let testFiltering = \expected selection -> test ("process value of" ++ Debug.toString selection) <|
+        --             \_ ->
+        --                 Expect.equal expected (filteredToUppercaseString selection)
         --       in
         --       [ describe "capitalize values and"
         --         [ testFiltering ["VALUE"] <| Single "value"
@@ -103,7 +103,7 @@ all =
         ]
 
 
-
+-- TODO
 {-
 
    Ellie fallback
