@@ -6,27 +6,6 @@ import Test exposing (..)
 import Ex2 exposing (..)
 
 
-{- main function is for html test runner (https://github.com/elm-community/html-test-runner)
-   In order to run tests using browser:
-       1. Ensure you are in `tests` folder
-       2. Run `elm-reactor` command
-       3. Navigate in your browser to http://localhost:8000
-       4. Click `Tests.elm` file
-       5. Refresh, when you make changes to your elm files
-
-
-    If you have problems, ask or try Ellie fallback (instructions at the end of the file)
-
--}
-
-
--- TODO
--- main : Test.Runner.Html.TestProgram
--- main =
---     Test.Runner.Html.run all
-
-
-
 -- For instructions on how to run these tests in console, read info in `Ex2.elm` file
 
 
@@ -101,18 +80,3 @@ all =
         --             |> Expect.false "Expected list to not contain BANANAS"
         --     ]
         ]
-
-
--- TODO
-{-
-
-   Ellie fallback
-
-   It is possible to run these tests and whole exercise 2 in Ellie
-   1. Go to: https://ellie-app.com/new
-   2. Install packages: core, html, html-test-runner (community version), elm-test, eeue56/elm-html-test
-   3. Replace Elm code in online editor with content of Ex2.elm and Tests.elm files
-   4. Move all imports to the top of the file (remove import of Ex2)
-   5. Change Html - use the name of the module: `var app = Elm.Ex2.fullscreen()` (or whatever your online module is called!)
-
--}
